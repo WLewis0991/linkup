@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../api/axios";
+import { connectSocket } from "../sockets/socket";
 
 // ── Reusable input component ──────────────────────────────────────────────────
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -102,7 +103,8 @@ export default function SignIn() {
       const data = await login(username, password);
 
       if (data.token) {
-        localStorage.setItem("token", data.token);
+        await localStorage.setItem("token", data.token);
+        await connectSocket();
         navigate("/home");
       } else {
         setError("No token returned");
@@ -124,8 +126,17 @@ export default function SignIn() {
       }}
     >
       <div className="w-full max-w-md">
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                  <div
+            className="rounded-2xl overflow-hidden"
+            style={{
+              background: "rgba(255,255,255,0.82)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+              border: "1px solid rgba(255,255,255,0.9)",
+              boxShadow: "0 8px 40px rgba(15,23,42,0.10), 0 1px 2px rgba(15,23,42,0.06)",
+            }}
+          >
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-5">
 
           <Field
             label="USERNAME"
@@ -148,7 +159,7 @@ export default function SignIn() {
                 setPassword(e.target.value);
                 setErrors((x) => ({ ...x, password: undefined }));
               }}
-              className="w-full rounded-xl px-4 py-3 pr-10"
+              className="w-full rounded-xl px-4 py-3 pr-10 border"
             />
 
             <button
@@ -168,6 +179,7 @@ export default function SignIn() {
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
+        </div>
 
         <p className="text-center text-sm mt-4">
           Don't have an account? <Link to="/register">Sign up</Link>

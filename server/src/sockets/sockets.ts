@@ -19,31 +19,32 @@ export const initializeSocket = (httpServer: HttpServer) => {
     });
 
     //Authenticatoin
-    io.use((socket, next) => {
-        const token = socket.handshake.auth.token;
+        io.use((socket, next) => {
+        const token = socket.handshake.auth?.token;
 
-        if(!token) {
-            return next(new Error("Unauthorized"))
+        if (!token) {
+            return next(new Error("No token provided"));
         }
 
         try {
-            const decoded = jwt.verify(token, JWT_SECRET) as unknown as CustomJwtPayload;
-            socket.data.use = decoded;
+            const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+
+            socket.data.user = decoded; // attach user safely
             next();
         } catch (err) {
             return next(new Error("Invalid token"));
         }
-    }); 
-    //Socket connects
+        });
+    //When Socket Connects register user events
     io.on("connection", (socket) => {
-        console.log("🔌 User connected", socket.data.user.username);
+        console.log("🔌 User connected", socket.data.user?.username);
 
         //Events under sockets connection
         
         registerUserEvents(io,socket);
 
         socket.on("disconnect", () => {
-            console.log("❗️User disconnected", socket.data.user.username);
+            console.log("❗️User disconnected", socket.data.user?.username);
         })
     })
     

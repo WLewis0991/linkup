@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { register } from "../api/axios";
+import { connectSocket } from "../sockets/socket";
 
 // ── Reusable input component ──────────────────────────────────────────────────
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -85,7 +86,8 @@ export default function Register() {
       const data = await register(username, password);
 
       if (data.token) {
-        localStorage.setItem("token", data.token);
+        await localStorage.setItem("token", data.token);
+        await connectSocket();
         navigate("/home");
       } else {
         // fallback if your backend doesn’t auto-login
@@ -108,8 +110,18 @@ export default function Register() {
       }}
     >
       <div className="w-full max-w-md">
+                  <div
+            className="rounded-2xl overflow-hidden"
+            style={{
+              background: "rgba(255,255,255,0.82)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+              border: "1px solid rgba(255,255,255,0.9)",
+              boxShadow: "0 8px 40px rgba(15,23,42,0.10), 0 1px 2px rgba(15,23,42,0.06)",
+            }}
+          >
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-5">
 
           <Field
             label="USERNAME"
@@ -162,7 +174,7 @@ export default function Register() {
           </button>
 
         </form>
-
+        </div>
         <p className="text-center text-sm mt-4">
           Already have an account? <Link to="/sign-in">Sign in</Link>
         </p>
