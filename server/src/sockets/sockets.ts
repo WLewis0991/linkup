@@ -3,6 +3,8 @@ import { Server as SocketIOServer ,Socket } from "socket.io";
 import { Server as HttpServer } from "http";
 import jwt from "jsonwebtoken";
 import { CustomJwtPayload } from "../types/auth.types";
+import { registerHooks } from "module";
+import { registerUserEvents } from "./userEvents";
 
 dotenv.config();
 
@@ -38,6 +40,8 @@ export const initializeSocket = (httpServer: HttpServer) => {
 
         //Events under sockets connection
         
+        registerUserEvents(io,socket);
+
         socket.on("disconnect", () => {
             console.log("❗️User disconnected", socket.data.user.username);
         })
