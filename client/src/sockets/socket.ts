@@ -51,3 +51,14 @@ export function disconnectSocket(): void {
     socket = null;
   }
 }
+export function autoConnectSocket(): Promise<Socket | null> {
+  const token = localStorage.getItem("token");
+
+  if (!token) return Promise.resolve(null);
+
+  if (socket?.connected) {
+    return Promise.resolve(socket);
+  }
+
+  return connectSocket();
+}

@@ -6,8 +6,14 @@ import Register from "./pages/Register"
 import SignIn from "./pages/SignIn"
 import NotFound from "./pages/NotFound"
 import { Background } from "./components/Background"
+import { useEffect } from "react"
+import { autoConnectSocket } from "./sockets/socket";
 
 function App() {
+  useEffect(() => {
+    autoConnectSocket().catch(console.error);
+  }, []);
+
   return (
     <BrowserRouter>
       {/* Fixed behind everything — renders once */}
