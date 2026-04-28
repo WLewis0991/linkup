@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import Splash from "./pages/Splash"
+import SplashScreen from "./pages/Splash"
 import Home from "./pages/Home"
 import Register from "./pages/Register"
 import SignIn from "./pages/SignIn"
@@ -20,9 +20,9 @@ function App() {
         <Background />
       </div>
 
-      <div className="relative z-10">
+      <div className="relative z-10 w-3/4 mx-auto bg-white/80 rounded-lg shadow-lg">
         <Routes>
-          <Route path="/" element={<Splash />} />
+          <Route path="/" element={<SplashScreen />} />
           <Route path="/home" element={<Home />} />
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/register" element={<Register />} />

@@ -40,19 +40,21 @@ export default function ChatContainer() {
   }, []);
 
   return (
-    <div className="chat-container">
+    <div className="chat-container w-full min-h-dvh p-4 flex flex-col">
       <h2>Chat</h2>
 
-      <div className="messages">
+      <div className="messages w-full flex-1 overflow-y-auto mb-4 flex flex-col justify-end gap-2">
         {messages.map((msg, index) => (
           <div key={index}>
             <strong>{msg.from.username}</strong>: {msg.content}
+            <p className="timestamp">{new Date(msg.timestamp).toLocaleTimeString()}</p>
           </div>
         ))}
       </div>
 
-      <div className="input-area">
+      <div className="input-area display flex items-center gap-2 justify-center border-t pt-2">
         <input
+          className="w-1/2"
           type="text"
           placeholder="Type a message..."
           value={input}

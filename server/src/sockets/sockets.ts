@@ -35,31 +35,48 @@ export const initializeSocket = (httpServer: HttpServer) => {
             return next(new Error("Invalid token"));
         }
         });
-io.on("connection", (socket) => {
-    const user = socket.data.user;
+    io.on("connection", (socket) => {
+        const user = socket.data.user;
 
-    console.log("🔌 User connected", user?.username);
-
-    registerUserEvents(io, socket);
-
-  socket.on("send_message", (text: string) => {
-    const user = socket.data.user;
-
-    const message = {
-      content: text,
-      from: {
-        id: user.id,
-        username: user.username,
-      },
-      timestamp: new Date().toISOString(),
+        if (!user) {
+            console.log("❌ Unauthorized socket connection attempt");
+            socket.disconnect();
+            return
+        }
+        const message = {
+        content: `${user.username} has joined the chat`,
+        from: {
+            id: "system",
+            username: "System",
+        },
+        timestamp: new Date().toISOString(),
     };
 
     io.emit("receive_message", message);
-  });
-    socket.on("disconnect", () => {
-        console.log("❗️User disconnected", socket.data.user?.username);
+
+
+        console.log("🔌 User connected", user?.username);
+
+        registerUserEvents(io, socket);
+
+        socket.on("send_message", (text: string) => {
+            const user = socket.data.user;
+
+            const message = {
+            content: text,
+            from: {
+                id: user.id,
+                username: user.username,
+            },
+            timestamp: new Date().toISOString(),
+            };
+            
+            io.emit("receive_message", message);
+        });
+            socket.on("disconnect", () => {
+                console.log("❗️User disconnected", socket.data.user?.username);
+            });
     });
-});
     
     
     
