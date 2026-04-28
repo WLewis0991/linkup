@@ -1,5 +1,4 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import NavBar from "./components/NavBar"
 import Splash from "./pages/Splash"
 import Home from "./pages/Home"
 import Register from "./pages/Register"
@@ -22,7 +21,6 @@ function App() {
       </div>
 
       <div className="relative z-10">
-        <NavBar />
         <Routes>
           <Route path="/" element={<Splash />} />
           <Route path="/home" element={<Home />} />

@@ -35,18 +35,31 @@ export const initializeSocket = (httpServer: HttpServer) => {
             return next(new Error("Invalid token"));
         }
         });
-    //When Socket Connects register user events
-    io.on("connection", (socket) => {
-        console.log("🔌 User connected", socket.data.user?.username);
+io.on("connection", (socket) => {
+    const user = socket.data.user;
 
-        //Events under sockets connection
-        
-        registerUserEvents(io,socket);
+    console.log("🔌 User connected", user?.username);
 
-        socket.on("disconnect", () => {
-            console.log("❗️User disconnected", socket.data.user?.username);
-        })
-    })
+    registerUserEvents(io, socket);
+
+  socket.on("send_message", (text: string) => {
+    const user = socket.data.user;
+
+    const message = {
+      content: text,
+      from: {
+        id: user.id,
+        username: user.username,
+      },
+      timestamp: new Date().toISOString(),
+    };
+
+    io.emit("receive_message", message);
+  });
+    socket.on("disconnect", () => {
+        console.log("❗️User disconnected", socket.data.user?.username);
+    });
+});
     
     
     
