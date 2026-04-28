@@ -7,6 +7,8 @@ import NotFound from "./pages/NotFound"
 import { Background } from "./components/Background"
 import { useEffect } from "react"
 import { autoConnectSocket } from "./sockets/socket";
+import ChatContainer from "./components/ChatContainer"
+import Profile from "./components/Profile"
 
 function App() {
   useEffect(() => {
@@ -14,22 +16,26 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      {/* Fixed behind everything — renders once */}
-      <div className="fixed inset-0 -z-10 min-h-dvh">
-        <Background />
-      </div>
+<BrowserRouter>
+  {/* Background */}
+  <div className="fixed inset-0 -z-10 min-h-dvh">
+    <Background />
+  </div>
 
-      <div className="relative z-10 w-3/4 mx-auto bg-white/80 rounded-lg shadow-lg">
-        <Routes>
-          <Route path="/" element={<SplashScreen />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </div>
-    </BrowserRouter>
+  <div className="relative z-10 w-3/4 mx-auto bg-white/80 rounded-lg shadow-lg">
+    <Routes>
+      <Route path="/" element={<SplashScreen />} />
+      <Route path="/sign-in" element={<SignIn />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/home" element={<Home />}>
+        <Route index element={<ChatContainer />} />
+        <Route path="profile" element={<Profile />} />
+      </Route>
+
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  </div>
+</BrowserRouter>
   )
 }
 

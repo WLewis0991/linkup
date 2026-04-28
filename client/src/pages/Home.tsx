@@ -1,25 +1,13 @@
-import ChatContainer from "../components/ChatContainer";
+import { Outlet } from "react-router-dom";
 import NavBar from "../components/NavBar";
 
-
-export default function Home () {
-
-    //useEffect(() => {
-    //    testSocket(testSocketCallBackHandler);
-    //    testSocket(null);
-    //
-    //       return () => {
-    //    testSocket(testSocketCallBackHandler, true)
-    //    }
-    // }, []);
-    // const testSocketCallBackHandler = (data:any) => {
-    //     console.log("got a response from testSocket ever", data)
-    // }
-
-    return(<>
+export default function Home() {
+  return (
     <div className="flex flex-row">
-    <NavBar />
-    <ChatContainer />
+      <NavBar />
+      <div className="flex-1">
+        <Outlet />
+      </div>
     </div>
-    </>)
+  );
 }
