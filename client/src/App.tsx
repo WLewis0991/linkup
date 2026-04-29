@@ -9,6 +9,9 @@ import { useEffect } from "react"
 import { autoConnectSocket } from "./sockets/socket";
 import ChatContainer from "./components/ChatContainer"
 import Profile from "./components/Profile"
+import Messages from "./components/Messages"
+import FriendsList from "./components/FriendsList"
+import Groups from "./components/Groups"
 
 function App() {
   useEffect(() => {
@@ -30,6 +33,9 @@ function App() {
       <Route path="/home" element={<Home />}>
         <Route index element={<ChatContainer />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="friends" element={<FriendsList />} />
+        <Route path="groups" element={<Groups />} />
+        <Route path="messages" element={<Messages />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
