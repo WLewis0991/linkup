@@ -2,30 +2,42 @@ import { useEffect, useRef } from "react";
 
 export function Background() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
- 
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
- 
+
     let animFrame: number;
- 
+
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
     resize();
     window.addEventListener("resize", resize);
- 
-    // Icon types: 'bubble-sm', 'bubble-md', 'bubble-lg', 'dot', 'ring', 'plus', 'line'
+
+    // Resolve icon color based on current color scheme
+    const getIconColor = () =>
+      document.documentElement.classList.contains("dark")
+        ? "#94a3b8"   // slate-400 — visible on dark bg
+        : "#64748b";  // slate-500 — visible on light bg
+
+    // React to dark mode toggles at runtime
+    const darkObserver = new MutationObserver(() => {});
+    darkObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
     type IconType = "bubble-sm" | "bubble-md" | "bubble-lg" | "dot" | "ring" | "plus" | "dash";
- 
+
     const icons: {
       x: number; y: number; type: IconType; size: number;
       opacity: number; speed: number; drift: number; phase: number;
     }[] = [];
- 
+
     const types: IconType[] = ["bubble-sm", "bubble-md", "bubble-lg", "dot", "ring", "plus", "dash"];
     for (let i = 0; i < 160; i++) {
       icons.push({
@@ -39,8 +51,14 @@ export function Background() {
         phase: Math.random() * Math.PI * 2,
       });
     }
- 
-    const drawBubble = (ctx: CanvasRenderingContext2D, x: number, y: number, s: number, dots: number) => {
+
+    const drawBubble = (
+      ctx: CanvasRenderingContext2D,
+      x: number,
+      y: number,
+      s: number,
+      dots: number
+    ) => {
       const r = s;
       ctx.beginPath();
       ctx.moveTo(x - r, y);
@@ -61,23 +79,25 @@ export function Background() {
         }
       }
     };
- 
+
     let t = 0;
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       t += 0.005;
- 
+
+      const iconColor = getIconColor();
+
       for (const icon of icons) {
         const bob = Math.sin(t * icon.speed * 6 + icon.phase) * 2;
         const ix = icon.x + Math.sin(t * icon.speed + icon.phase) * 8;
         const iy = icon.y + bob;
- 
+
         ctx.save();
         ctx.globalAlpha = icon.opacity;
-        ctx.strokeStyle = "#64748b";
-        ctx.fillStyle = "#64748b";
+        ctx.strokeStyle = iconColor;
+        ctx.fillStyle = iconColor;
         ctx.lineWidth = 1;
- 
+
         switch (icon.type) {
           case "bubble-sm": drawBubble(ctx, ix, iy, icon.size * 0.7, 0); break;
           case "bubble-md": drawBubble(ctx, ix, iy, icon.size * 0.9, 3); break;
@@ -110,22 +130,22 @@ export function Background() {
         }
         ctx.restore();
       }
- 
+
       animFrame = requestAnimationFrame(draw);
     };
     draw();
- 
+
     return () => {
       cancelAnimationFrame(animFrame);
       window.removeEventListener("resize", resize);
+      darkObserver.disconnect();
     };
   }, []);
- 
+
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 w-full h-full pointer-events-none"
-      style={{ background: "#f5f6f8" }}
+      className="fixed inset-0 w-full h-full pointer-events-none bg-white dark:bg-gray-950"
     />
   );
 }

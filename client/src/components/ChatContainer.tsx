@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getSocket } from "../sockets/socket";
 
 type Message = {
@@ -13,35 +13,63 @@ type Message = {
 export default function ChatContainer() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [currentRoom, setCurrentRoom] = useState<string | null>("global");
+  const [systemMessages, setSystemMessages] = useState<string[]>([]);
+
+  
 
   const sendMessage = () => {
     const socket = getSocket();
-    if (!socket || !input.trim()) return;
+    if (!socket || !input.trim() || !currentRoom) return;
 
-    // ONLY send raw text (server attaches user via JWT)
-    socket.emit("send_message", input);
-
+    socket.emit("send_message", { text: input, room: currentRoom });
     setInput("");
   };
 
-  useEffect(() => {
+  const joinRoom = useCallback((newRoom: string) => {
     const socket = getSocket();
     if (!socket) return;
+    if (currentRoom) {
+      socket.emit("leave_room", currentRoom);
+    }
+    setMessages([]);
+    setCurrentRoom(newRoom);
+    socket.emit("join_room", newRoom);
+  }, [currentRoom]); // ✅ depends on currentRoom
 
-    const handler = (msg: Message) => {
-      setMessages((prev) => [...prev, msg]);
-    };
+useEffect(() => {
+  const socket = getSocket();
+  if (!socket) return;
 
-    socket.on("receive_message", handler);
+  // Join the default room on mount
+  socket.emit("join_room", "global");
 
-    return () => {
-      socket.off("receive_message", handler);
-    };
-  }, []);
+  const messageHandler = (msg: Message) => {
+    setMessages((prev) => [...prev, msg]);
+  };
+
+  const systemHandler = (text: string) => {
+    setSystemMessages((prev) => [...prev, text]);
+    setTimeout(() => {
+      setSystemMessages((prev) => prev.filter((msg) => msg !== text));
+    }, 3000);
+  };
+
+  socket.on("receive_message", messageHandler);
+  socket.on("system_message", systemHandler);
+
+  return () => {
+    socket.off("receive_message", messageHandler);
+    socket.off("system_message", systemHandler);
+    socket.emit("leave_room", "global"); // clean up on unmount
+  };
+}, []);
+
+
 
   return (
-    <div className="chat-container w-full min-h-dvh p-4 flex flex-col">
-      <h2>Chat</h2>
+    <div className="chat-container dark:bg-slate-900 dark:text-white w-full min-h-dvh p-4 flex flex-col">
+      <h2>Room: {currentRoom ?? "None"}</h2>
 
       <div className="messages w-full flex-1 overflow-y-auto mb-4 flex flex-col justify-end gap-2">
         {messages.map((msg, index) => (
@@ -51,10 +79,15 @@ export default function ChatContainer() {
           </div>
         ))}
       </div>
+        {systemMessages.map((text, index) => (
+      <div key={index} className="text-center text-gray-400 text-sm italic">
+          {text}
+        </div>
+      ))}
 
       <div className="input-area display flex items-center gap-2 justify-center border-t pt-2">
         <input
-          className="w-1/2"
+          className="w-1/2 dark:bg-slate-700 dark:text-white p-2 rounded"
           type="text"
           placeholder="Type a message..."
           value={input}
@@ -64,7 +97,12 @@ export default function ChatContainer() {
           }}
         />
 
-        <button onClick={sendMessage}>Send</button>
+        <button onClick={sendMessage} disabled={!currentRoom} className="dark:bg-slate-700 dark:text-white p-2 rounded">
+          Send
+        </button> {/*disabled until in a room */}
+        <button onClick={() => joinRoom("global")} className="dark:bg-slate-700 dark:text-white p-2 rounded">
+          Join Room
+        </button>
       </div>
     </div>
   );

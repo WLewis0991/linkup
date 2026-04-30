@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../api/axios";
-import { connectSocket } from "../sockets/socket";
+import { connectSocket, getSocket } from "../sockets/socket";
 
 // ── Reusable input component ──────────────────────────────────────────────────
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -9,8 +9,10 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
 }
 
-function Field({ label, error, ...props }: InputProps) {
+function Field({ label, error, className, ...props }: InputProps & { className?: string }) {
   const [focused, setFocused] = useState(false);
+  const isDark = document.documentElement.classList.contains("dark");
+
   return (
     <div className="flex flex-col gap-1.5">
       <label
@@ -23,22 +25,22 @@ function Field({ label, error, ...props }: InputProps) {
         {...props}
         onFocus={(e) => { setFocused(true); props.onFocus?.(e); }}
         onBlur={(e) => { setFocused(false); props.onBlur?.(e); }}
-        className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
+        className={`w-full rounded-xl px-4 py-3 text-sm outline-none transition-all ${className ?? ""}`}
         style={{
           fontFamily: "'DM Sans', sans-serif",
-          background: focused ? "#fff" : "#f8fafc",
+          background: focused
+            ? (isDark ? "#334155" : "#fff")
+            : (isDark ? "#1e293b" : "#f8fafc"),
           border: error
             ? "1.5px solid #ef4444"
             : focused
-            ? "1.5px solid #334155"
+            ? "1.5px solid #94a3b8"
             : "1.5px solid #e2e8f0",
-          color: "#0f172a",
+          color: isDark ? "#f1f5f9" : "#0f172a",
           ...props.style,
         }}
       />
-      {error && (
-        <p className="text-xs text-red-400">{error}</p>
-      )}
+      {error && <p className="text-xs text-red-400">{error}</p>}
     </div>
   );
 }
@@ -101,11 +103,14 @@ export default function SignIn() {
 
     try {
       const data = await login(username, password);
+      const socket =  getSocket();
+
 
       if (data.token) {
         await localStorage.setItem("token", data.token);
         await connectSocket();
-        navigate("/home");
+        socket?.emit("join_room", "global")
+        await navigate("/home");
       } else {
         setError("No token returned");
       }
@@ -118,14 +123,14 @@ export default function SignIn() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4"
+      className="dark:bg-slate-900 min-h-screen flex items-center justify-center px-4"
       style={{
         opacity: mounted ? 1 : 0,
         transform: mounted ? "translateY(0)" : "translateY(16px)",
         transition: "0.4s",
       }}
     >
-      <div className="w-full max-w-md">
+      <div className=" w-full max-w-md">
                   <div
             className="rounded-2xl overflow-hidden"
             style={{
@@ -136,7 +141,7 @@ export default function SignIn() {
               boxShadow: "0 8px 40px rgba(15,23,42,0.10), 0 1px 2px rgba(15,23,42,0.06)",
             }}
           >
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-5">
+        <form onSubmit={handleSubmit} className="dark:bg-slate-900 dark:text-white flex flex-col gap-4 p-5">
 
           <Field
             label="USERNAME"
@@ -159,7 +164,7 @@ export default function SignIn() {
                 setPassword(e.target.value);
                 setErrors((x) => ({ ...x, password: undefined }));
               }}
-              className="w-full rounded-xl px-4 py-3 pr-10 border"
+              className="dark:bg-slate-800 w-full rounded-xl px-4 py-3 pr-10 border"
             />
 
             <button
@@ -181,7 +186,7 @@ export default function SignIn() {
         </form>
         </div>
 
-        <p className="text-center text-sm mt-4">
+        <p className="dark:text-white text-center text-sm mt-4">
           Don't have an account? <Link to="/register">Sign up</Link>
         </p>
 

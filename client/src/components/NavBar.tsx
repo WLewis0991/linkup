@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import LinkUpLogo from "./LinkUpLogo";
+import DarkModeToggle from "./Dark/LightButton";
 
 export default function NavBar () {
 
     return(<>
-    <div className="min-w-52 min-h-dvh border-r flex flex-col items-center pt-10 gap-5" >
+    <div className="min-w-52 min-h-dvh dark:bg-slate-800 dark:text-white border-r flex flex-col items-center pt-10 gap-5" >
         <Link to="/home">
             <LinkUpLogo />
         </Link>
@@ -25,6 +26,8 @@ export default function NavBar () {
         <Link to="/home/profile">
             <h1>Profile</h1>
         </Link>
+        <br />
+        <DarkModeToggle />
     </div>
     </>)
 

@@ -19,7 +19,7 @@ export const initializeSocket = (httpServer: HttpServer) => {
     });
 
     //Authenticatoin
-        io.use((socket, next) => {
+    io.use((socket, next) => {
         const token = socket.handshake.auth?.token;
 
         if (!token) {
@@ -34,7 +34,7 @@ export const initializeSocket = (httpServer: HttpServer) => {
         } catch (err) {
             return next(new Error("Invalid token"));
         }
-        });
+    });
     io.on("connection", (socket) => {
         const user = socket.data.user;
 
@@ -43,23 +43,22 @@ export const initializeSocket = (httpServer: HttpServer) => {
             socket.disconnect();
             return
         }
-        const message = {
-        content: `${user.username} has joined the chat`,
-        from: {
-            id: "system",
-            username: "System",
-        },
-        timestamp: new Date().toISOString(),
-    };
-
-    io.emit("receive_message", message);
-
-
         console.log("🔌 User connected", user?.username);
 
         registerUserEvents(io, socket);
 
-        socket.on("send_message", (text: string) => {
+        socket.on("join_room", (room) => {
+            socket.join(room);
+            io.to(room).emit("system_message", `${socket.data.user?.username} has joined the room.`);
+        });
+
+        socket.on("leave_room", (room) => {
+            socket.leave(room);
+            io.to(room).emit("system_message", `${socket.data.user?.username} has left the room.`);
+        });
+
+
+        socket.on("send_message", ({ text, room }: { text: string; room: string }) => {
             const user = socket.data.user;
 
             const message = {
@@ -71,7 +70,7 @@ export const initializeSocket = (httpServer: HttpServer) => {
             timestamp: new Date().toISOString(),
             };
             
-            io.emit("receive_message", message);
+            io.to(room).emit("receive_message", message);
         });
             socket.on("disconnect", () => {
                 console.log("❗️User disconnected", socket.data.user?.username);

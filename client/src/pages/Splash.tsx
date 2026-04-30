@@ -8,7 +8,6 @@ const styles = `
 
   .splash {
     min-height: 100vh;
-    background: transparent;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -17,17 +16,6 @@ const styles = `
     overflow: hidden;
     gap: 0;
   }
-
-  /* floating blobs */
-  .blob {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-    filter: blur(48px);
-    opacity: 0;
-    transition: opacity 1.4s ease 0.1s;
-  }
-  .blob.visible { opacity: 1; }
 
   /* logo bubble */
   .logo-wrap {
@@ -48,8 +36,6 @@ const styles = `
     width: 84px;
     height: 84px;
     border-radius: 28px;
-    background: #ffffff;
-    box-shadow: 0 8px 32px rgba(255,100,130,0.18), 0 2px 8px rgba(0,0,0,0.06);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -78,8 +64,6 @@ const styles = `
     transform: translateY(0);
   }
 
-  .word-link { color: #1a1a2e; }
-
   .word-up {
     -webkit-text-stroke: 3px #ff6482;
     color: transparent;
@@ -107,16 +91,12 @@ const styles = `
     padding: 6px 14px;
     border-radius: 99px;
   }
-  .pill-a { background: #fff0f3; color: #ff6482; }
-  .pill-b { background: #f0f4ff; color: #5b7cf6; }
-  .pill-c { background: #f0fdf6; color: #22c07a; }
 
   /* tagline */
   .tagline {
     font-family: 'Nunito', sans-serif;
     font-size: 16px;
     font-weight: 400;
-    color: #8b8b9e;
     text-align: center;
     line-height: 1.7;
     max-width: 260px;
@@ -162,7 +142,7 @@ const styles = `
   }
   .enter-btn:active { scale: 0.97; }
 
-  /* small avatar row hinting social */
+  /* avatars */
   .avatars {
     display: flex;
     align-items: center;
@@ -189,14 +169,6 @@ const styles = `
     margin-left: -8px;
   }
   .av:first-child { margin-left: 0; }
-
-  .av-label {
-    font-family: 'Nunito', sans-serif;
-    font-size: 12px;
-    font-weight: 600;
-    color: #b0b0c0;
-    margin-left: 10px;
-  }
 `;
 
 const avatars = [
@@ -216,22 +188,26 @@ export default function SplashScreenV3() {
 
   const cls = (base: string) => `${base}${visible ? " visible" : ""}`;
 
+  const token = localStorage.getItem("token");
+
   return (
     <>
       <style>{styles}</style>
-      <div className="splash">
+      {/*
+        bg-white / dark:bg-gray-950 — page background adapts to OS/user preference.
+        Add `class="dark"` to <html> (or use a toggle) to enable dark mode.
+      */}
+      <div className="splash bg-white dark:bg-gray-950">
 
         {/* logo */}
         <div className={cls("logo-wrap")}>
-          <div className="logo-bubble">
+          {/* logo-bubble: white card in light, dark card in dark */}
+          <div className="logo-bubble bg-white dark:bg-gray-800 shadow-[0_8px_32px_rgba(255,100,130,0.18),0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_32px_rgba(255,100,130,0.12)]">
             <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-              {/* speech bubble shape */}
               <rect x="4" y="6" width="30" height="22" rx="9" fill="#ff6482"/>
               <path d="M10 28 L7 36 L18 30" fill="#ff6482"/>
-              {/* up arrow inside bubble */}
               <line x1="19" y1="21" x2="19" y2="11" stroke="#fff" strokeWidth="2.8" strokeLinecap="round"/>
               <path d="M14.5 15 L19 10 L23.5 15" fill="none" stroke="#fff" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
-              {/* second small bubble */}
               <circle cx="38" cy="34" r="7" fill="#5b7cf6"/>
               <line x1="38" y1="37.5" x2="38" y2="31.5" stroke="#fff" strokeWidth="2.2" strokeLinecap="round"/>
               <path d="M35.2 33.8 L38 31 L40.8 33.8" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -241,28 +217,47 @@ export default function SplashScreenV3() {
 
         {/* wordmark */}
         <div className={cls("wordmark")}>
-          <span className="word-link">Link</span>
+          {/* "Link" — near-black in light, near-white in dark */}
+          <span className="text-gray-900 dark:text-gray-100">Link</span>
           <span className="word-up">Up</span>
         </div>
 
         {/* pill tags */}
         <div className={cls("pills")}>
-          <span className="pill pill-a">Messaging</span>
-          <span className="pill pill-b">Groups</span>
-          <span className="pill pill-c">Live</span>
+          <span className="pill bg-pink-50 text-pink-500 dark:bg-pink-950 dark:text-pink-400">
+            Messaging
+          </span>
+          <span className="pill bg-indigo-50 text-indigo-500 dark:bg-indigo-950 dark:text-indigo-400">
+            Groups
+          </span>
+          <span className="pill bg-emerald-50 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
+            Live
+          </span>
         </div>
 
         {/* tagline */}
-        <p className={cls("tagline")}>
+        <p className={`${cls("tagline")} text-gray-400 dark:text-gray-500`}>
           Chat with the people that matter.
           <br />
           Instantly, effortlessly.
         </p>
 
         {/* CTA */}
-        <Link to="/home">
-            <button className={cls("enter-btn")}>Get started</button>
+        <Link to={token ? "/home" : "/sign-in"}>
+          <button className={cls("enter-btn")}>Get started</button>
         </Link>
+
+        {/* avatars */}
+        <div className={cls("avatars")}>
+          {avatars.map((av) => (
+            <div key={av.initials} className="av" style={{ background: av.bg }}>
+              {av.initials}
+            </div>
+          ))}
+          <span className="font-[Nunito] text-xs font-semibold text-gray-400 dark:text-gray-600 ml-2.5">
+            Join thousands of users
+          </span>
+        </div>
       </div>
     </>
   );

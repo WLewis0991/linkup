@@ -88,7 +88,7 @@ export default function Register() {
       if (data.token) {
         await localStorage.setItem("token", data.token);
         await connectSocket();
-        navigate("/home");
+        await navigate("/home");
       } else {
         // fallback if your backend doesn’t auto-login
         navigate("/login");
