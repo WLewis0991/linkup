@@ -8,7 +8,7 @@ import { Background } from "./components/Background"
 import { useEffect } from "react"
 import { autoConnectSocket } from "./sockets/socket";
 import ChatContainer from "./components/ChatContainer"
-import Profile from "./components/Profile"
+import Profile from "./pages/Profile"
 import Messages from "./components/Messages"
 import FriendsList from "./components/FriendsList"
 import Groups from "./components/Groups"

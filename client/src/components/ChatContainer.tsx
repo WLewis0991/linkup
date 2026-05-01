@@ -7,7 +7,7 @@ import MessageBubble from "./MessageBubble";
 export default function ChatContainer() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [currentRoom, setCurrentRoom] = useState<string | null>("global");
+  const [currentRoom, setCurrentRoom] = useState<string | null>(null);
   const [systemMessages, setSystemMessages] = useState<string[]>([]);
 
   
@@ -29,7 +29,7 @@ export default function ChatContainer() {
     setMessages([]);
     setCurrentRoom(newRoom);
     socket.emit("join_room", newRoom);
-  }, [currentRoom]); // ✅ depends on currentRoom
+  }, [currentRoom]); 
 
   useEffect(() => {
     const socket = getSocket();
@@ -37,6 +37,8 @@ export default function ChatContainer() {
 
     // Join the default room on mount
     socket.emit("join_room", "global");
+
+    setCurrentRoom("global");
 
     const messageHandler = (msg: Message) => {
       setMessages((prev) => [...prev, msg]);

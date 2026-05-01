@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import LinkUpLogo from "./LinkUpLogo";
-import DarkModeToggle from "../hooks/LightButton";
+import { DarkModeToggle } from "../hooks/LightButton";
 import { jwtDecode } from "jwt-decode";
 
 type JwtPayload ={
