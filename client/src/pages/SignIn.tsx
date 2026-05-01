@@ -35,7 +35,7 @@ function Field({ label, error, className, ...props }: InputProps & { className?:
             ? "1.5px solid #ef4444"
             : focused
             ? "1.5px solid #94a3b8"
-            : "1.5px solid #e2e8f0",
+            : "1.5px solid #94a3b8",
           color: isDark ? "#f1f5f9" : "#0f172a",
           ...props.style,
         }}
@@ -64,6 +64,9 @@ function EyeIcon({ open }: { open: boolean }) {
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function SignIn() {
   const navigate = useNavigate();
+
+  const isDark = document.documentElement.classList.contains("dark");
+
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -123,25 +126,27 @@ export default function SignIn() {
 
   return (
     <div
-      className="dark:bg-slate-900 min-h-screen flex items-center justify-center px-4"
+      className="dark:bg-slate-950 min-h-screen flex items-center justify-center px-4"
       style={{
         opacity: mounted ? 1 : 0,
         transform: mounted ? "translateY(0)" : "translateY(16px)",
         transition: "0.4s",
       }}
     >
-      <div className=" w-full max-w-md">
-                  <div
-            className="rounded-2xl overflow-hidden"
-            style={{
-              background: "rgba(255,255,255,0.82)",
-              backdropFilter: "blur(24px)",
-              WebkitBackdropFilter: "blur(24px)",
-              border: "1px solid rgba(255,255,255,0.9)",
-              boxShadow: "0 8px 40px rgba(15,23,42,0.10), 0 1px 2px rgba(15,23,42,0.06)",
-            }}
-          >
-        <form onSubmit={handleSubmit} className="dark:bg-slate-900 dark:text-white flex flex-col gap-4 p-5">
+<div className="w-full max-w-md">
+  <div
+    className="rounded-2xl overflow-hidden"
+    style={{
+      background: isDark ? "rgba(15,23,42,0.80)" : "rgba(255,255,255,0.82)",
+      backdropFilter: "blur(24px)",
+      WebkitBackdropFilter: "blur(24px)",
+      border: isDark ? "1px solid rgba(71,85,105,0.5)" : "1px solid rgba(255,255,255,0.9)",
+      boxShadow: isDark
+        ? "0 8px 40px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.20)"
+        : "0 8px 40px rgba(15,23,42,0.10), 0 1px 2px rgba(15,23,42,0.06)",
+    }}
+  >
+        <form onSubmit={handleSubmit} className="dark:bg-slate-900  dark:text-white flex flex-col gap-4 p-5">
 
           <Field
             label="USERNAME"
@@ -164,7 +169,7 @@ export default function SignIn() {
                 setPassword(e.target.value);
                 setErrors((x) => ({ ...x, password: undefined }));
               }}
-              className="dark:bg-slate-800 w-full rounded-xl px-4 py-3 pr-10 border"
+              className="dark:bg-slate-800 dark:border-slate-400 dark:hover:border-slate-400 dark:focus:bg-slate-700  w-full rounded-xl px-4 py-3 pr-10 border border-zinc-200 focus:border-slate-400 outline-none transition-all"
             />
 
             <button
@@ -186,7 +191,7 @@ export default function SignIn() {
         </form>
         </div>
 
-        <p className="dark:text-white text-center text-sm mt-4">
+        <p className="dark:text-slate-300 text-center text-sm mt-4">
           Don't have an account? <Link to="/register">Sign up</Link>
         </p>
 

@@ -9,7 +9,10 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
 }
 
+
 function Field({ label, error, ...props }: InputProps) {
+  const isDark = document.documentElement.classList.contains("dark");
+
   const [focused, setFocused] = useState(false);
   return (
     <div className="flex flex-col gap-1.5">
@@ -22,12 +25,17 @@ function Field({ label, error, ...props }: InputProps) {
         onBlur={(e) => { setFocused(false); props.onBlur?.(e); }}
         className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
         style={{
-          background: focused ? "#fff" : "#f8fafc",
+          fontFamily: "'DM Sans', sans-serif",
+          background: focused
+            ? (isDark ? "#334155" : "#fff")
+            : (isDark ? "#1e293b" : "#f8fafc"),
           border: error
             ? "1.5px solid #ef4444"
             : focused
-            ? "1.5px solid #334155"
-            : "1.5px solid #e2e8f0",
+            ? "1.5px solid #94a3b8"
+            : "1.5px solid #94a3b8",
+          color: isDark ? "#f1f5f9" : "#0f172a",
+          ...props.style,
         }}
       />
       {error && <p className="text-xs text-red-400">{error}</p>}
@@ -35,9 +43,13 @@ function Field({ label, error, ...props }: InputProps) {
   );
 }
 
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function Register() {
   const navigate = useNavigate();
+
+   const isDark = document.documentElement.classList.contains("dark");
+
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -102,7 +114,7 @@ export default function Register() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4"
+      className="dark:bg-slate-950 min-h-screen flex items-center justify-center px-4"
       style={{
         opacity: mounted ? 1 : 0,
         transform: mounted ? "translateY(0)" : "translateY(16px)",
@@ -111,14 +123,16 @@ export default function Register() {
     >
       <div className="w-full max-w-md">
                   <div
-            className="rounded-2xl overflow-hidden"
-            style={{
-              background: "rgba(255,255,255,0.82)",
-              backdropFilter: "blur(24px)",
-              WebkitBackdropFilter: "blur(24px)",
-              border: "1px solid rgba(255,255,255,0.9)",
-              boxShadow: "0 8px 40px rgba(15,23,42,0.10), 0 1px 2px rgba(15,23,42,0.06)",
-            }}
+            className=" rounded-2xl overflow-hidden"
+    style={{
+      background: isDark ? "rgba(15,23,42,0.80)" : "rgba(255,255,255,0.82)",
+      backdropFilter: "blur(24px)",
+      WebkitBackdropFilter: "blur(24px)",
+      border: isDark ? "1px solid rgba(71,85,105,0.5)" : "1px solid rgba(255,255,255,0.9)",
+      boxShadow: isDark
+        ? "0 8px 40px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.20)"
+        : "0 8px 40px rgba(15,23,42,0.10), 0 1px 2px rgba(15,23,42,0.06)",
+    }}
           >
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-5">
@@ -175,7 +189,7 @@ export default function Register() {
 
         </form>
         </div>
-        <p className="text-center text-sm mt-4">
+        <p className="dark:text-slate-300 text-center text-sm mt-4">
           Already have an account? <Link to="/sign-in">Sign in</Link>
         </p>
 

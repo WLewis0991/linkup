@@ -1,15 +1,24 @@
 import { Link } from "react-router-dom";
 import LinkUpLogo from "./LinkUpLogo";
-import DarkModeToggle from "./Dark/LightButton";
+import DarkModeToggle from "../hooks/LightButton";
+import { jwtDecode } from "jwt-decode";
+
+type JwtPayload ={
+  username:string;
+  userId:string;
+}
 
 export default function NavBar () {
 
+    const token = localStorage.getItem("token");
+    const currentUser = token ? jwtDecode<JwtPayload>(token) : null;
+
     return(<>
-    <div className="min-w-52 min-h-dvh dark:bg-slate-800 dark:text-white border-r flex flex-col items-center pt-10 gap-5" >
+    <div className="min-w-52 min-h-dvh dark:bg-slate-900 dark:text-white dark:border-slate-800 border-zinc-200 border-r flex flex-col items-center pt-10 gap-5" >
         <Link to="/home">
             <LinkUpLogo />
         </Link>
-        <div className="h-1 w-3/4 border-b"> </div>
+        <div className="h-1 w-3/4 dark:border-slate-800 border-zinc-200 border-b"> </div>
         <br />
         <Link to="/home/friends">
             <h1>Friends</h1>
@@ -23,7 +32,7 @@ export default function NavBar () {
             <h1>Messages</h1>
         </Link>
         <br />
-        <Link to="/home/profile">
+        <Link to={`/home/profile/${currentUser?.userId}`}>
             <h1>Profile</h1>
         </Link>
         <br />
