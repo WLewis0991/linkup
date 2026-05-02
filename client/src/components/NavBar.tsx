@@ -14,14 +14,14 @@ export default function NavBar () {
     const currentUser = token ? jwtDecode<JwtPayload>(token) : null;
 
     return(<>
-    <div className="min-w-52 min-h-dvh dark:bg-slate-900 dark:text-white dark:border-slate-800 border-zinc-200 border-r flex flex-col items-center pt-10 gap-5" >
+    <div className="min-w-52 h-full dark:bg-slate-900 dark:text-white dark:border-slate-800 border-zinc-200 border-r flex flex-col items-center pt-10 gap-5" >
         <Link to="/home">
             <LinkUpLogo />
         </Link>
         <div className="h-1 w-3/4 dark:border-slate-800 border-zinc-200 border-b"> </div>
         <br />
-        <Link to="/home/friends">
-            <h1>Friends</h1>
+        <Link to="/home/people">
+            <h1>People</h1>
         </Link>
         <br />
         <Link to="/home/groups">

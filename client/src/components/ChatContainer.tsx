@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { getSocket } from "../sockets/socket";
 import type { Message } from "../types/Types";
 import MessageBubble from "./MessageBubble";
@@ -30,6 +30,12 @@ export default function ChatContainer() {
     setCurrentRoom(newRoom);
     socket.emit("join_room", newRoom);
   }, [currentRoom]); 
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   useEffect(() => {
     const socket = getSocket();
@@ -64,14 +70,16 @@ export default function ChatContainer() {
 
 
   return (
-    <div className="dark:bg-slate-950 dark:text-white bg-zinc-100 w-full h-full p-4 flex flex-col">
+    <div className="dark:bg-slate-950 dark:text-white bg-zinc-100 w-full h-full p-4 flex flex-col min-h-0">
       <h2>Room: {currentRoom ?? "None"}</h2>
 
-      <div className="w-full flex-1 min-h-0 overflow-y-auto mb-4 flex flex-col justify-end gap-2">
-        {messages.map((msg, index) => (
-          <MessageBubble msg={msg} key={index} />
-        ))}
-      </div>
+    <div className="message-box w-full flex-1 min-h-0 mb-4 flex flex-col gap-2 overflow-y-auto">
+      <div className="mt-auto" />
+      {messages.map((msg, index) => (
+        <MessageBubble msg={msg} key={index} />
+      ))}
+      <div ref={messagesEndRef} />
+    </div>
 
       <div className="flex flex-col items-center">
         {systemMessages.map((text, index) => (

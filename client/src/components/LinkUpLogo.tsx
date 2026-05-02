@@ -5,6 +5,7 @@ interface LinkUpLogoProps {
   variant?: "bubble" | "flat" | "outline";
   accentColor?: string;
   secondaryColor?: string;
+  className?: string;
 }
 
 const DEFAULT_ACCENT = "#ff6482";
@@ -15,6 +16,7 @@ export default function LinkUpLogo({
   variant = "bubble",
   accentColor = DEFAULT_ACCENT,
   secondaryColor = DEFAULT_SECONDARY,
+  className,
 }: LinkUpLogoProps) {
   const radius = Math.round(size * 0.333);
   const iconSize = Math.round(size * 0.571);
@@ -23,7 +25,6 @@ export default function LinkUpLogo({
     width: size,
     height: size,
     borderRadius: radius,
-    background: "#ffffff",
     boxShadow: `0 ${Math.round(size * 0.095)}px ${Math.round(size * 0.38)}px ${accentColor}2e, 0 2px 8px rgba(0,0,0,0.06)`,
     display: "flex",
     alignItems: "center",
@@ -64,7 +65,7 @@ export default function LinkUpLogo({
   const sw = (base: number) => (base * iconSize) / 48;
 
   return (
-    <div style={containerStyle}>
+    <div style={containerStyle} className={className}>
       <svg
         width={iconSize}
         height={iconSize}
@@ -74,11 +75,8 @@ export default function LinkUpLogo({
         aria-label="LinkUp logo"
         role="img"
       >
-        {/* main speech bubble */}
         <rect x="4" y="6" width="30" height="22" rx="9" fill={accentColor} />
-        {/* bubble tail */}
         <path d="M10 28 L7 36 L18 30" fill={accentColor} />
-        {/* up arrow inside main bubble */}
         <line
           x1="19" y1="21" x2="19" y2="11"
           stroke="#fff"
@@ -93,9 +91,7 @@ export default function LinkUpLogo({
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        {/* secondary small bubble */}
         <circle cx="38" cy="34" r="7" fill={secondaryColor} />
-        {/* up arrow inside secondary bubble */}
         <line
           x1="38" y1="37.5" x2="38" y2="31.5"
           stroke="#fff"

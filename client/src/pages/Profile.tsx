@@ -30,7 +30,7 @@ export default function Profile() {
   
   return (
     
-    <div className="h-full overflow-y-auto px-6 py-10 dark:text-slate-100 text-slate-800">
+    <div className="h-full overflow-y-auto px-6 py-10 dark:text-slate-100 bg-zinc-100 dark:bg-slate-950 text-slate-800">
       <div className="max-w-xl mx-auto flex flex-col gap-6">
 
         {/* Avatar + username hero */}
