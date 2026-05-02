@@ -2,14 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { CustomJwtPayload } from "../types/auth.types";
 
-declare global {
-  namespace Express {
-    interface Request {
-      userId?: string;
-    }
-  }
-}
-
 export function authMiddleware(
   req: Request,
   res: Response,
@@ -29,7 +21,7 @@ export function authMiddleware(
       process.env.JWT_SECRET as string
     ) as CustomJwtPayload;
 
-    req.userId = decoded.userId;
+    req.user = decoded; // ✅ single source of truth
 
     return next();
   } catch {

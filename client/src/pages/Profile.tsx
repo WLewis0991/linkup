@@ -4,7 +4,6 @@ import { api } from "../api/axios";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { useDarkMode } from "../hooks/LightButton";
 
-
 type UserProfile = {
   id: string;
   username: string;
@@ -15,6 +14,7 @@ export default function Profile() {
   const { id } = useParams();
   const [user, setUser] = useState<UserProfile | null>(null);
   const isDark = useDarkMode();
+  
   
 
   useEffect(() => {
