@@ -10,9 +10,9 @@ import { autoConnectSocket } from "./sockets/socket";
 import ChatContainer from "./components/ChatContainer"
 import Profile from "./pages/Profile"
 import Messages from "./pages/Messages"
-import FriendsList from "./pages/People"
 import Groups from "./components/Groups"
 import People from "./pages/People"
+import ChatRooms from "./pages/ChatRooms"
 
 function App() {
   
@@ -67,6 +67,7 @@ return (
                 <Route path="people" element={<People />} />
                 <Route path="groups" element={<Groups />} />
                 <Route path="messages" element={<Messages />} />
+                <Route path="rooms" element={<ChatRooms />} />
               </Route>
             )}
             <Route path="*" element={<NotFound />} />

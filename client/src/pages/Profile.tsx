@@ -28,7 +28,6 @@ export default function Profile() {
 
   if (!user) return <LoadingSpinner />;
 
-  //const initials = user.username.slice(0, 2).toUpperCase();
   
   return (
     

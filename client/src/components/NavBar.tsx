@@ -24,6 +24,9 @@ export default function NavBar () {
             <h1>People</h1>
         </Link>
         <br />
+        <Link to="/home/rooms">
+            <h1>Rooms</h1>
+        </Link>
         {/* <Link to="/home/groups">
             <h1>Groups</h1>
         </Link>
