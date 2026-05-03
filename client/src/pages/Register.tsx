@@ -2,17 +2,15 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { register } from "../api/axios";
 import { connectSocket } from "../sockets/socket";
+import axios from "axios";
 
-// ── Reusable input component ──────────────────────────────────────────────────
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
 }
 
-
 function Field({ label, error, ...props }: InputProps) {
   const isDark = document.documentElement.classList.contains("dark");
-
   const [focused, setFocused] = useState(false);
   return (
     <div className="flex flex-col gap-1.5">
@@ -43,18 +41,13 @@ function Field({ label, error, ...props }: InputProps) {
   );
 }
 
-
-// ── Main ──────────────────────────────────────────────────────────────────────
 export default function Register() {
   const navigate = useNavigate();
-
-   const isDark = document.documentElement.classList.contains("dark");
-
+  const isDark = document.documentElement.classList.contains("dark");
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{
     username?: string;
@@ -62,7 +55,6 @@ export default function Register() {
     confirm?: string;
   }>({});
   const [error, setError] = useState("");
-
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -72,12 +64,10 @@ export default function Register() {
 
   const validate = () => {
     const e: typeof errors = {};
-
     if (!username) e.username = "Username is required";
     if (!password) e.password = "Password is required";
     if (password.length < 6) e.password = "Min 6 characters";
     if (confirm !== password) e.confirm = "Passwords do not match";
-
     return e;
   };
 
@@ -98,11 +88,19 @@ export default function Register() {
       const data = await register(username, password);
 
       if (data.token) {
-        await localStorage.setItem("token", data.token);
+        localStorage.setItem("token", data.token);
+
+        const payload = JSON.parse(atob(data.token.split(".")[1]));
+        const userId = payload.id ?? payload._id ?? payload.sub;
+
         await connectSocket();
-        await navigate("/home");
+        await axios.post(
+          `http://localhost:3000/api/rooms/Test%20Room/join`,
+          { userId },
+          { headers: { Authorization: `Bearer ${data.token}` } }
+        );
+        navigate("/home");
       } else {
-        // fallback if your backend doesn’t auto-login
         navigate("/login");
       }
     } catch (err: any) {
@@ -122,77 +120,67 @@ export default function Register() {
       }}
     >
       <div className="w-full max-w-md">
-                  <div
-            className=" rounded-2xl overflow-hidden"
-    style={{
-      background: isDark ? "rgba(15,23,42,0.80)" : "rgba(255,255,255,0.82)",
-      backdropFilter: "blur(24px)",
-      WebkitBackdropFilter: "blur(24px)",
-      border: isDark ? "1px solid rgba(71,85,105,0.5)" : "1px solid rgba(255,255,255,0.9)",
-      boxShadow: isDark
-        ? "0 8px 40px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.20)"
-        : "0 8px 40px rgba(15,23,42,0.10), 0 1px 2px rgba(15,23,42,0.06)",
-    }}
-          >
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-5">
-
-          <Field
-            label="USERNAME"
-            type="text"
-            placeholder="your_username"
-            value={username}
-            onChange={(e) => {
-              setUsername(e.target.value);
-              setErrors((x) => ({ ...x, username: undefined }));
-            }}
-            error={errors.username}
-          />
-
-          <Field
-            label="PASSWORD"
-            type="password"
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              setErrors((x) => ({ ...x, password: undefined }));
-            }}
-            error={errors.password}
-          />
-
-          <Field
-            label="CONFIRM PASSWORD"
-            type="password"
-            placeholder="••••••••"
-            value={confirm}
-            onChange={(e) => {
-              setConfirm(e.target.value);
-              setErrors((x) => ({ ...x, confirm: undefined }));
-            }}
-            error={errors.confirm}
-          />
-
-          {error && (
-            <p className="text-sm text-red-500 text-center">
-              {error}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="py-3 rounded-xl bg-slate-800 text-white"
-          >
-            {loading ? "Creating account..." : "Sign Up"}
-          </button>
-
-        </form>
+        <div
+          className="rounded-2xl overflow-hidden"
+          style={{
+            background: isDark ? "rgba(15,23,42,0.80)" : "rgba(255,255,255,0.82)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+            border: isDark ? "1px solid rgba(71,85,105,0.5)" : "1px solid rgba(255,255,255,0.9)",
+            boxShadow: isDark
+              ? "0 8px 40px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.20)"
+              : "0 8px 40px rgba(15,23,42,0.10), 0 1px 2px rgba(15,23,42,0.06)",
+          }}
+        >
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-5">
+            <Field
+              label="USERNAME"
+              type="text"
+              placeholder="your_username"
+              value={username}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                setErrors((x) => ({ ...x, username: undefined }));
+              }}
+              error={errors.username}
+            />
+            <Field
+              label="PASSWORD"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setErrors((x) => ({ ...x, password: undefined }));
+              }}
+              error={errors.password}
+            />
+            <Field
+              label="CONFIRM PASSWORD"
+              type="password"
+              placeholder="••••••••"
+              value={confirm}
+              onChange={(e) => {
+                setConfirm(e.target.value);
+                setErrors((x) => ({ ...x, confirm: undefined }));
+              }}
+              error={errors.confirm}
+            />
+            {error && (
+              <p className="text-sm text-red-500 text-center">{error}</p>
+            )}
+            <button
+              type="submit"
+              disabled={loading}
+              className="py-3 rounded-xl bg-slate-800 text-white"
+            >
+              {loading ? "Creating account..." : "Sign Up"}
+            </button>
+          </form>
         </div>
         <p className="dark:text-slate-300 text-center text-sm mt-4">
           Already have an account? <Link to="/sign-in">Sign in</Link>
         </p>
-
       </div>
     </div>
   );

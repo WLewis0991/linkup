@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { getSocket } from "../sockets/socket";
 import type { Message } from "../types/Types";
 import MessageBubble from "./MessageBubble";
+import { useLocation } from "react-router-dom";
 
 
 export default function ChatContainer() {
@@ -10,7 +11,27 @@ export default function ChatContainer() {
   const [currentRoom, setCurrentRoom] = useState<string | null>(null);
   const [systemMessages, setSystemMessages] = useState<string[]>([]);
 
-  
+  const state = useLocation().state as { name: string } | null;
+
+  const currentRoomRef = useRef(currentRoom);
+  useEffect(() => { currentRoomRef.current = currentRoom; }, [currentRoom]);
+
+  const joinRoom = useCallback((newRoom: string) => {
+    const socket = getSocket();
+    if (!socket) return;
+    if (currentRoomRef.current) {
+      socket.emit("leave_room", currentRoomRef.current);
+    }
+    setMessages([]);
+    setCurrentRoom(newRoom);
+    socket.emit("join_room", newRoom);
+  }, []);
+
+  useEffect(() => {
+    if (state?.name) {
+      joinRoom(state.name);
+    }
+  }, [state, joinRoom]);
 
   const sendMessage = () => {
     const socket = getSocket();
@@ -19,17 +40,6 @@ export default function ChatContainer() {
     socket.emit("send_message", { text: input, room: currentRoom });
     setInput("");
   };
-
-  // const joinRoom = useCallback((newRoom: string) => {
-  //   const socket = getSocket();
-  //   if (!socket) return;
-  //   if (currentRoom) {
-  //     socket.emit("leave_room", currentRoom);
-  //   }
-  //   setMessages([]);
-  //   setCurrentRoom(newRoom);
-  //   socket.emit("join_room", newRoom);
-  // }, [currentRoom]); 
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -40,11 +50,6 @@ export default function ChatContainer() {
   useEffect(() => {
     const socket = getSocket();
     if (!socket) return;
-
-    // Join the default room on mount
-    socket.emit("join_room", "global");
-
-    setCurrentRoom("global");
 
     const messageHandler = (msg: Message) => {
       setMessages((prev) => [...prev, msg]);
@@ -63,23 +68,21 @@ export default function ChatContainer() {
     return () => {
       socket.off("receive_message", messageHandler);
       socket.off("system_message", systemHandler);
-      socket.emit("leave_room", "global"); // clean up on unmount
+      if (currentRoomRef.current) socket.emit("leave_room", currentRoomRef.current);
     };
   }, []);
-
-
 
   return (
     <div className="dark:bg-slate-950 dark:text-white bg-zinc-100 w-full h-full p-4 flex flex-col min-h-0 dark:bg-opacity-10">
       <h2>Room: {currentRoom ?? "None"}</h2>
 
-    <div className="message-box w-full flex-1 min-h-0 mb-4 flex flex-col gap-2 overflow-y-auto">
-      <div className="mt-auto" />
-      {messages.map((msg, index) => (
-        <MessageBubble msg={msg} key={index} />
-      ))}
-      <div ref={messagesEndRef} />
-    </div>
+      <div className="message-box w-full flex-1 min-h-0 mb-4 flex flex-col gap-2 overflow-y-auto">
+        <div className="mt-auto" />
+        {messages.map((msg, index) => (
+          <MessageBubble msg={msg} key={index} />
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
 
       <div className="flex flex-col items-center">
         {systemMessages.map((text, index) => (

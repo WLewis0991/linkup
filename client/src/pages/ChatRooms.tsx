@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { api } from "../api/axios"
-import { Link } from "react-router";
+import ChatRoomCard from "../components/ChatRoomCard";
 
 interface ChatRooms {
     id: string;
@@ -33,10 +33,7 @@ export default function ChatRooms() {
             ) : (
                 <ul className="space-y-4">
                     {rooms.map((room) => (
-                        <li key={room.id} className="p-4 bg-white dark:bg-slate-800 rounded-lg shadow">
-                            <h2 className="text-xl font-semibold">{room.name}</h2>
-                            {room.description && <p className="text-sm mt-1 text-gray-600 dark:text-gray-400">{room.description}</p>}
-                        </li>
+                        < ChatRoomCard key={room.id} room={room} />
                     ))}
                 </ul>
             )}

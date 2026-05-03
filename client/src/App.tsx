@@ -13,6 +13,7 @@ import Messages from "./pages/Messages"
 import Groups from "./components/Groups"
 import People from "./pages/People"
 import ChatRooms from "./pages/ChatRooms"
+import Welcome from "./pages/Welcome"
 
 function App() {
   
@@ -62,12 +63,13 @@ return (
             )}
             {token && (
               <Route path="/home" element={<Home />}>
-                <Route index element={<ChatContainer />} />
+                <Route index element={<Welcome />} />
                 <Route path="profile/:id" element={<Profile />} />
                 <Route path="people" element={<People />} />
                 <Route path="groups" element={<Groups />} />
                 <Route path="messages" element={<Messages />} />
                 <Route path="rooms" element={<ChatRooms />} />
+                <Route path="chat/:id" element={<ChatContainer />} />
               </Route>
             )}
             <Route path="*" element={<NotFound />} />
