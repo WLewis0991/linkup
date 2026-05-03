@@ -1,10 +1,18 @@
 import { api } from "../api/axios";
 import { useEffect, useState } from "react";
+import UserCard from "../components/UserCards";
 
+interface UserCardProps {
+  user: {
+    id: string
+    avatar?: string | null
+    username: string
+  }
+}
 
 export default function People() {
 
-    const [users, setUsers] = useState([])
+    const [users, setUsers] = useState<UserCardProps['user'][]>([])
 
     const fetchUsers = async () => {
         try{
@@ -21,15 +29,12 @@ export default function People() {
     })
  
     return (
-        <div>
-            <h1>People</h1>
-            <ul>
-                {users.map((user: any) => (
-                    <li key={user.id}>
-                        <strong>{user.username}</strong> - {user.email}
-                    </li>
-                ))}
-            </ul>
+        <div className="bg-zinc-100 dark:bg-slate-950 dark:text-slate-100 p-5 w-full h-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {users.map((user) => (
+            <UserCard key={user.id} user={user} />
+            ))}
+        </div>
         </div>
     )
 
