@@ -24,14 +24,14 @@ export default function NavBar () {
             <h1>People</h1>
         </Link>
         <br />
-        <Link to="/home/groups">
+        {/* <Link to="/home/groups">
             <h1>Groups</h1>
         </Link>
         <br />
         <Link to="/home/messages">
             <h1>Messages</h1>
         </Link>
-        <br />
+        <br /> */}
         <Link to={`/home/profile/${currentUser?.userId}`}>
             <h1>Profile</h1>
         </Link>

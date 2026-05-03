@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { api } from "../api/axios";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { useDarkMode } from "../hooks/LightButton";
+import { Avatar } from "../components/Avatar";
 
 type UserProfile = {
   id: string;
   username: string;
   email: string;
+  avatar?: string | null;
 };
 
 export default function Profile() {
@@ -26,7 +28,7 @@ export default function Profile() {
 
   if (!user) return <LoadingSpinner />;
 
-  const initials = user.username.slice(0, 2).toUpperCase();
+  //const initials = user.username.slice(0, 2).toUpperCase();
   
   return (
     
@@ -46,19 +48,8 @@ export default function Profile() {
               : "0 8px 40px rgba(15,23,42,0.08)",
           }}
         >
-          {/* Avatar placeholder — swap for <img> when ready */}
-          <div
-            className="w-24 h-24 rounded-full flex items-center justify-center text-2xl font-semibold tracking-wide"
-            style={{
-              background: isDark
-                ? "linear-gradient(135deg, #334155, #1e293b)"
-                : "linear-gradient(135deg, #e2e8f0, #cbd5e1)",
-              border: isDark ? "2px solid #475569" : "2px solid #e2e8f0",
-              color: isDark ? "#94a3b8" : "#64748b",
-            }}
-          >
-            {initials}
-          </div>
+          {/* Avatar */}
+          <Avatar avatarUrl={user.avatar} name={user.username} className="min-h-30 min-w-30 rounded-full"/>
 
           <div>
             <h1 className="text-2xl font-bold tracking-tight">{user.username}</h1>
