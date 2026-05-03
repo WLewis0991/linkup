@@ -16,8 +16,6 @@ import ChatRooms from "./pages/ChatRooms"
 import Welcome from "./pages/Welcome"
 
 function App() {
-  
-  const token = localStorage.getItem("token");
 
   useEffect(() => {
     autoConnectSocket().catch(console.error);
@@ -55,13 +53,8 @@ return (
         <div className="flex-1 min-h-0 overflow-hidden">
           <Routes>
             <Route path="/" element={<SplashScreen />} />
-            {!token && (
-              <>
                 <Route path="/sign-in" element={<SignIn />} />
                 <Route path="/register" element={<Register />} />
-              </>
-            )}
-            {token && (
               <Route path="/home" element={<Home />}>
                 <Route index element={<Welcome />} />
                 <Route path="profile/:id" element={<Profile />} />
@@ -71,7 +64,6 @@ return (
                 <Route path="rooms" element={<ChatRooms />} />
                 <Route path="chat/:id" element={<ChatContainer />} />
               </Route>
-            )}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>

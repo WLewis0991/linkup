@@ -13,6 +13,10 @@ export default function NavBar () {
     const token = localStorage.getItem("token");
     const currentUser = token ? jwtDecode<JwtPayload>(token) : null;
 
+    if (!token) {
+        return null;
+    }
+
     return(<>
     <div className="min-w-52 h-full dark:bg-slate-900 dark:text-white dark:border-slate-800 border-zinc-200 border-r flex flex-col items-center pt-10 gap-5 dark:bg-opacity-10" >
         <Link to="/home">
@@ -27,6 +31,7 @@ export default function NavBar () {
         <Link to="/home/rooms">
             <h1>Rooms</h1>
         </Link>
+        <br />
         {/* <Link to="/home/groups">
             <h1>Groups</h1>
         </Link>
