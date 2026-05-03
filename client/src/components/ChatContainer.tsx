@@ -20,16 +20,16 @@ export default function ChatContainer() {
     setInput("");
   };
 
-  const joinRoom = useCallback((newRoom: string) => {
-    const socket = getSocket();
-    if (!socket) return;
-    if (currentRoom) {
-      socket.emit("leave_room", currentRoom);
-    }
-    setMessages([]);
-    setCurrentRoom(newRoom);
-    socket.emit("join_room", newRoom);
-  }, [currentRoom]); 
+  // const joinRoom = useCallback((newRoom: string) => {
+  //   const socket = getSocket();
+  //   if (!socket) return;
+  //   if (currentRoom) {
+  //     socket.emit("leave_room", currentRoom);
+  //   }
+  //   setMessages([]);
+  //   setCurrentRoom(newRoom);
+  //   socket.emit("join_room", newRoom);
+  // }, [currentRoom]); 
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -102,9 +102,6 @@ export default function ChatContainer() {
         />
         <button onClick={sendMessage} disabled={!currentRoom} className="dark:bg-slate-900 dark:text-white p-2 rounded">
           Send
-        </button>
-        <button onClick={() => joinRoom("global")} className="dark:bg-slate-900 dark:text-white p-2 rounded">
-          Join Room
         </button>
       </div>
     </div>

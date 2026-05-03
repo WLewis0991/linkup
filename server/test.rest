@@ -15,6 +15,19 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "username" : "will@gmail.com",
-    "password" : "password123"
+    "username" : "test",
+    "password" : "test123"
 }
+
+###POST / CREATE ROOM
+POST http://localhost:3000/api/rooms/create
+Content-Type: application/json
+
+{
+    "name" : "Test Room",
+    "description" : "This is a test room"
+}
+
+### GET / GET ALL ROOMS
+GET http://localhost:3000/api/rooms/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJlZmE1YjRmMC01YTFjLTRlMzAtOTdmZi03ZGMzMjcwNzAwNmQiLCJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE3Nzc4MjY1OTEsImV4cCI6MTc3ODQzMTM5MX0.gRjnxOUhtcnkSLXmKeNpUZvGlNRFyRSIt0XvvWcCTdk

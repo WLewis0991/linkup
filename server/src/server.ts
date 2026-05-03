@@ -7,6 +7,7 @@ import authRoutes from "./routes/auth.routes";
 import { createServer } from "http";
 import { initializeSocket } from "./sockets/sockets";
 import userRoutes from "./routes/user.routes";
+import roomRoutes from "./routes/rooms.routes";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.get("/", (_req: Request, res: Response) => {
 // Routes
 app.use("/auth", authRoutes);
 app.use("/api/user", userRoutes);
+app.use("/api/rooms", roomRoutes);
 
 
 // Socket.IO
