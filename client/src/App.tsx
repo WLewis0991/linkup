@@ -38,7 +38,7 @@ return (
       <div
         className="
           w-full max-w-5xl h-full
-          bg-white/60 dark:bg-zinc-900/40
+         
           backdrop-blur-xl
           border border-zinc-200/80 dark:border-zinc-700/50
           rounded-2xl

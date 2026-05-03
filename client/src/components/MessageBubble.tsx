@@ -28,7 +28,7 @@ const currentUser = token ? jwtDecode<JwtPayload>(token) : null;
           ? "message-bubble flex flex-row-reverse gap-5 bg-blue-500 text-white dark:bg-slate-800 p-2 rounded-lg max-w-md w-fit self-end min-w-0 break-words"
           : "message-bubble flex flex-row gap-5 bg-gray-200 text-gray-800 p-2 rounded-lg dark:bg-slate-600 dark:text-slate-100 max-w-md w-fit self-start min-w-0 break-words"
       } >
-      <Avatar avatarUrl={msg.from.avatar} className="w-10 h-10 rounded-full" />
+      <Avatar avatarUrl={msg.from.avatar} className="w-11 h-11 rounded-full" />
       <div className="flex flex-col">
         <div className="flex items-center gap-2">
           <h1 className="text-sm font-semibold">{msg.from.username}</h1>

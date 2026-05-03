@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @keyframes fadeOut {
+@keyframes fadeOut {
   from { opacity: 1; }
   to { opacity: 0; }
 }
@@ -11,7 +11,7 @@
   animation: fadeOut linear;
   animation-timeline: view();
   animation-range: exit 0% exit 30%;
-} */
+}
 
 html, body, #root {
   height: 100%;

@@ -70,7 +70,7 @@ export default function ChatContainer() {
 
 
   return (
-    <div className="dark:bg-slate-950 dark:text-white bg-zinc-100 w-full h-full p-4 flex flex-col min-h-0">
+    <div className="dark:bg-slate-950 dark:text-white bg-zinc-100 w-full h-full p-4 flex flex-col min-h-0 dark:bg-opacity-10">
       <h2>Room: {currentRoom ?? "None"}</h2>
 
     <div className="message-box w-full flex-1 min-h-0 mb-4 flex flex-col gap-2 overflow-y-auto">
@@ -91,7 +91,7 @@ export default function ChatContainer() {
 
       <div className="flex items-center gap-2 justify-center border-zinc-200 dark:border-slate-800 border-t pt-2">
         <input
-          className="w-1/2 dark:bg-slate-900 dark:text-white p-2 rounded"
+          className="w-1/2 dark:bg-slate-900 dark:text-white p-2 rounded dark:bg-opacity-10"
           type="text"
           placeholder="Type a message..."
           value={input}

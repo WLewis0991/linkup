@@ -32,14 +32,14 @@ export default function Profile() {
   
   return (
     
-    <div className="h-full overflow-y-auto px-6 py-10 dark:text-slate-100 bg-zinc-100 dark:bg-slate-950 text-slate-800">
+    <div className="h-full overflow-y-auto px-6 py-10 dark:text-slate-100 bg-zinc-100 dark:bg-slate-950 dark:bg-opacity-10 text-slate-800">
       <div className="max-w-xl mx-auto flex flex-col gap-6">
 
         {/* Avatar + username hero */}
         <div
           className="rounded-2xl p-8 flex flex-col items-center gap-4 text-center"
           style={{
-            background: isDark ? "rgba(15,23,42,0.60)" : "rgba(255,255,255,0.65)",
+            background: isDark ? "rgba(15,23,42,0.10)" : "rgba(255,255,255,0.65)",
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
             border: isDark ? "1px solid rgba(71,85,105,0.45)" : "1px solid rgba(255,255,255,0.9)",
@@ -66,7 +66,7 @@ export default function Profile() {
         <div
           className="rounded-2xl overflow-hidden"
           style={{
-            background: isDark ? "rgba(15,23,42,0.50)" : "rgba(255,255,255,0.65)",
+            background: isDark ? "rgba(15,23,42,0.10)" : "rgba(255,255,255,0.65)",
             backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(20px)",
             border: isDark ? "1px solid rgba(71,85,105,0.35)" : "1px solid rgba(255,255,255,0.9)",

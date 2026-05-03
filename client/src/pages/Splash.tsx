@@ -171,13 +171,6 @@ const styles = `
   .av:first-child { margin-left: 0; }
 `;
 
-const avatars = [
-  { initials: "AK", bg: "#5b7cf6" },
-  { initials: "JR", bg: "#22c07a" },
-  { initials: "ML", bg: "#ff9472" },
-  { initials: "DS", bg: "#a78bfa" },
-];
-
 export default function SplashScreenV3() {
   const [visible, setVisible] = useState(false);
 
@@ -197,7 +190,7 @@ export default function SplashScreenV3() {
         bg-white / dark:bg-gray-950 — page background adapts to OS/user preference.
         Add `class="dark"` to <html> (or use a toggle) to enable dark mode.
       */}
-      <div className="splash bg-white dark:bg-gray-950">
+      <div className="splash bg-white dark:bg-gray-950 dark:bg-opacity-5">
 
         {/* logo */}
         <div className={cls("logo-wrap")}>
@@ -247,17 +240,6 @@ export default function SplashScreenV3() {
           <button className={cls("enter-btn")}>Get started</button>
         </Link>
 
-        {/* avatars */}
-        <div className={cls("avatars")}>
-          {avatars.map((av) => (
-            <div key={av.initials} className="av" style={{ background: av.bg }}>
-              {av.initials}
-            </div>
-          ))}
-          <span className="font-[Nunito] text-xs font-semibold text-gray-400 dark:text-gray-600 ml-2.5">
-            Join thousands of users
-          </span>
-        </div>
       </div>
     </>
   );

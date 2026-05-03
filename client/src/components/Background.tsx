@@ -21,8 +21,8 @@ export function Background() {
     // Resolve icon color based on current color scheme
     const getIconColor = () =>
       document.documentElement.classList.contains("dark")
-        ? "#94a3b8"   // slate-400 — visible on dark bg
-        : "#64748b";  // slate-500 — visible on light bg
+        ? "#e2e8f0"   // slate-200 — visible on dark bg
+        : "#0f172a";  // slate-900 — visible on light bg
 
     // React to dark mode toggles at runtime
     const darkObserver = new MutationObserver(() => {});
@@ -145,7 +145,7 @@ export function Background() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 w-full h-full pointer-events-none bg-white dark:bg-gray-950"
+      className="fixed inset-0 w-full h-full pointer-events-none bg-gray-100 dark:bg-gray-950"
     />
   );
 }
