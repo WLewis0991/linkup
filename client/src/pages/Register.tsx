@@ -90,13 +90,11 @@ export default function Register() {
       if (data.token) {
         localStorage.setItem("token", data.token);
 
-        const payload = JSON.parse(atob(data.token.split(".")[1]));
-        const userId = payload.id ?? payload._id ?? payload.sub;
 
         await connectSocket();
         await axios.post(
           `http://localhost:3000/api/rooms/Test%20Room/join`,
-          { userId },
+          {  },
           { headers: { Authorization: `Bearer ${data.token}` } }
         );
         navigate("/home");

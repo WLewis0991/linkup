@@ -14,14 +14,13 @@ export function authMiddleware(
   }
 
   const token = header.split(" ")[1];
-
   try {
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET as string
     ) as CustomJwtPayload;
 
-    req.user = decoded; // ✅ single source of truth
+    req.user = decoded;
 
     return next();
   } catch {
