@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { CustomJwtPayload } from "../types/auth.types";
 import { registerHooks } from "module";
 import { registerUserEvents } from "./userEvents";
+import prisma from "../config/db";
 
 dotenv.config();
 
@@ -57,21 +58,26 @@ export const initializeSocket = (httpServer: HttpServer) => {
             io.to(room).emit("system_message", `${socket.data.user?.username} has left the room.`);
         });
 
+socket.on("send_message", async ({ text, room }: { text: string; room: string }) => {
+  const user = socket.data.user;
 
-        socket.on("send_message", ({ text, room }: { text: string; room: string }) => {
-            const user = socket.data.user;
+  const dbUser = await prisma.user.findUnique({
+    where: { username: user.username }, // 👈 use username instead of id
+    select: { avatar: true },
+  });
 
-            const message = {
-            content: text,
-            from: {
-                id: user.id,
-                username: user.username,
-            },
-            timestamp: new Date().toISOString(),
-            };
-            
-            io.to(room).emit("receive_message", message);
-        });
+  const message = {
+    content: text,
+    from: {
+      id: user.id,
+      username: user.username,
+      avatar: dbUser?.avatar ?? null,
+    },
+    timestamp: new Date().toISOString(),
+  };
+
+  io.to(room).emit("receive_message", message);
+});
             socket.on("disconnect", () => {
                 console.log("❗️User disconnected", socket.data.user?.username);
             });
