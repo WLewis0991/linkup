@@ -80,20 +80,20 @@ export default function Profile() {
         .from("avatars")
         .upload(filePath, selectedFile, { upsert: true });
       if (uploadErr) throw uploadErr;
+    const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
+    const avatarUrl = `${data.publicUrl}?t=${Date.now()}`;
 
-      const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
+    await api.patch(`/api/user/${user.id}`, { avatar: avatarUrl });
 
-      await api.patch(`/api/user/${user.id}`, { avatar: data.publicUrl });
-
-      setUser((prev) => prev ? { ...prev, avatar: data.publicUrl } : prev);
-      closeDialog();
-    } catch (err) {
-      setUploadError("Upload failed. Please try again.");
-      console.error(err);
-    } finally {
-      setUploading(false);
-    }
-  };
+    setUser((prev) => prev ? { ...prev, avatar: avatarUrl } : prev);
+    closeDialog();
+        } catch (err) {
+          setUploadError("Upload failed. Please try again.");
+          console.error(err);
+        } finally {
+          setUploading(false);
+        }
+      };
 
   const closeDialog = () => {
     setDialogOpen(false);

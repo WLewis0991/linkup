@@ -110,7 +110,7 @@ export default function Register() {
 
   return (
     <div
-      className="dark:bg-slate-950 min-h-screen flex items-center justify-center px-4"
+      className=" min-h-screen flex items-center justify-center px-4"
       style={{
         opacity: mounted ? 1 : 0,
         transform: mounted ? "translateY(0)" : "translateY(16px)",

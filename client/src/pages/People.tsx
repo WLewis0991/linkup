@@ -16,8 +16,9 @@ export default function People() {
 
     const fetchUsers = async () => {
         try{
-            const res = await api.get("/api/user");
-            setUsers(res.data);
+const res = await api.get("/api/user");
+console.log("Users from API:", res.data);
+setUsers(res.data);
         } catch (err:any) {
             console.error("Failed to fetch users:", err.response?.data || err.message); 
         }
@@ -26,7 +27,7 @@ export default function People() {
 
     useEffect(() => {
         fetchUsers()
-    })
+    }, [])
  
     return (
         <div className="h-full overflow-y-auto px-6 py-10 dark:text-slate-100 bg-zinc-100 dark:bg-slate-950 dark:bg-opacity-10 text-slate-800">

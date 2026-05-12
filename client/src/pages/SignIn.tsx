@@ -126,26 +126,26 @@ export default function SignIn() {
 
   return (
     <div
-      className="dark:bg-slate-950 min-h-screen flex items-center justify-center px-4"
+      className=" min-h-screen flex items-center justify-center px-4"
       style={{
         opacity: mounted ? 1 : 0,
         transform: mounted ? "translateY(0)" : "translateY(16px)",
         transition: "0.4s",
       }}
     >
-<div className="w-full max-w-md">
-  <div
-    className="rounded-2xl overflow-hidden"
-    style={{
-      background: isDark ? "rgba(15,23,42,0.80)" : "rgba(255,255,255,0.82)",
-      backdropFilter: "blur(24px)",
-      WebkitBackdropFilter: "blur(24px)",
-      border: isDark ? "1px solid rgba(71,85,105,0.5)" : "1px solid rgba(255,255,255,0.9)",
-      boxShadow: isDark
-        ? "0 8px 40px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.20)"
-        : "0 8px 40px rgba(15,23,42,0.10), 0 1px 2px rgba(15,23,42,0.06)",
-    }}
-  >
+      <div className="w-full max-w-md">
+        <div
+          className="rounded-2xl overflow-hidden"
+          style={{
+            background: isDark ? "rgba(15,23,42,0.80)" : "rgba(255,255,255,0.82)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+            border: isDark ? "1px solid rgba(71,85,105,0.5)" : "1px solid rgba(255,255,255,0.9)",
+            boxShadow: isDark
+              ? "0 8px 40px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.20)"
+              : "0 8px 40px rgba(15,23,42,0.10), 0 1px 2px rgba(15,23,42,0.06)",
+          }}
+        >
         <form onSubmit={handleSubmit} className="dark:bg-slate-900  dark:text-white flex flex-col gap-4 p-5">
 
           <Field

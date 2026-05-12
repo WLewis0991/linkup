@@ -48,4 +48,20 @@ router.get("/:id", authMiddleware, async (req: Request<ParamsWithId>, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 });
+
+router.patch("/:id", authMiddleware, async (req: Request<ParamsWithId>, res) => {
+  const { id } = req.params;
+  const { avatar } = req.body;
+
+  try {
+    const updated = await prisma.user.update({
+      where: { id },
+      data: { avatar },
+    });
+    return res.json(updated);
+  } catch (err) {
+    console.error("User update error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
 export default router;
