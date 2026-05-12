@@ -283,12 +283,6 @@ const features = [
   },
 ];
 
-const stats = [
-  { value: "Live", label: "Message delivery" },
-  { value: "∞", label: "Rooms" },
-  { value: "Free", label: "Always" },
-];
-
 export default function Welcome() {
   const [vis, setVis] = useState(false);
 
@@ -303,7 +297,7 @@ export default function Welcome() {
     <>
       <style>{styles}</style>
 
-      <div className="lu-home bg-white dark:bg-gray-950 overflow-y-auto">
+      <div className="lu-home h-full overflow-y-auto px-6 py-10 dark:text-slate-100 bg-zinc-100 dark:bg-slate-950 dark:bg-opacity-10 text-slate-800">
 
 
         <div className="lu-inner overflow-y-auto">

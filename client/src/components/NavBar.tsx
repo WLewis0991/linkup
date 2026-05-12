@@ -18,7 +18,7 @@ export default function NavBar () {
     }
 
     return(<>
-    <div className="min-w-52 h-full dark:bg-slate-900 dark:text-white dark:border-slate-800 border-zinc-200 border-r flex flex-col items-center pt-10 gap-5 dark:bg-opacity-10" >
+    <div className="min-w-52 h-full overflow-y-auto dark:bg-slate-900 dark:text-white dark:border-slate-800 border-zinc-200 border-r flex flex-col items-center pt-10 gap-5 dark:bg-opacity-10" >
         <Link to="/home">
             <LinkUpLogo />
         </Link>

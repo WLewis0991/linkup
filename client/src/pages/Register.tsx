@@ -93,7 +93,7 @@ export default function Register() {
 
         await connectSocket();
         await axios.post(
-          `http://localhost:3000/api/rooms/Test%20Room/join`,
+          `http://localhost:3000/api/rooms/General/join`,
           {  },
           { headers: { Authorization: `Bearer ${data.token}` } }
         );
