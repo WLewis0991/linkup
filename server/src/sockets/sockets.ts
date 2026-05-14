@@ -48,9 +48,31 @@ export const initializeSocket = (httpServer: HttpServer) => {
 
         registerUserEvents(io, socket);
 
-        socket.on("join_room", (room) => {
-            socket.join(room);
-            io.to(room).emit("system_message", `${socket.data.user?.username} has joined the room.`);
+        socket.on("join_room", async (room: string) => {
+        socket.join(room);
+        io.to(room).emit("system_message", `${socket.data.user?.username} has joined the room.`);
+
+        const roomRecord = await prisma.room.findUnique({ where: { name: room } });
+        if (!roomRecord) return;
+
+        const history = await prisma.message.findMany({
+            where: { roomId: roomRecord.id },
+            include: { user: true },          // ← this was missing
+            orderBy: { createdAt: "asc" },
+            take: 50,
+        });
+
+        const formatted = history.map((msg) => ({
+            content: msg.content,
+            from: {
+            id: msg.user.id,
+            username: msg.user.username,
+            avatar: msg.user.avatar ?? null,
+            },
+            timestamp: msg.createdAt.toISOString(),
+        }));
+
+        socket.emit("message_history", formatted);
         });
 
         socket.on("leave_room", (room) => {
@@ -58,26 +80,33 @@ export const initializeSocket = (httpServer: HttpServer) => {
             io.to(room).emit("system_message", `${socket.data.user?.username} has left the room.`);
         });
 
-socket.on("send_message", async ({ text, room }: { text: string; room: string }) => {
-  const user = socket.data.user;
+        socket.on("send_message", async ({ text, room }: { text: string; room: string }) => {
+        const user = socket.data.user;
 
-  const dbUser = await prisma.user.findUnique({
-    where: { username: user.username }, // 👈 use username instead of id
-    select: { avatar: true },
-  });
+        const roomRecord = await prisma.room.findUnique({ where: { name: room } });
+        if (!roomRecord) return;
 
-  const message = {
-    content: text,
-    from: {
-      id: user.id,
-      username: user.username,
-      avatar: dbUser?.avatar ?? null,
-    },
-    timestamp: new Date().toISOString(),
-  };
+        const saved = await prisma.message.create({
+            data: {
+            content: text,
+            roomId: roomRecord.id,
+            userId: user.userId,  // ← socket.data.user.userId
+            },
+            include: { user: true },
+        });
 
-  io.to(room).emit("receive_message", message);
-});
+        const message = {
+            content: saved.content,
+            from: {
+            id: saved.user.id,
+            username: saved.user.username,
+            avatar: saved.user.avatar ?? null,
+            },
+            timestamp: saved.createdAt.toISOString(),
+        };
+
+        io.to(room).emit("receive_message", message);
+        });
             socket.on("disconnect", () => {
                 console.log("❗️User disconnected", socket.data.user?.username);
             });

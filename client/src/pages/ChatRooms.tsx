@@ -23,7 +23,7 @@ export default function ChatRooms() {
 
     useEffect(() => {
         fetchRooms();
-    })
+    }, [])
 
     return ( <>
         <div className="bg-zinc-100 dark:bg-slate-950 dark:text-slate-100 dark:bg-opacity-10 p-10 w-full h-full">

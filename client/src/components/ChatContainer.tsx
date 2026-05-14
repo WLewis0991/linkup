@@ -64,6 +64,9 @@ export default function ChatContainer() {
 
     socket.on("receive_message", messageHandler);
     socket.on("system_message", systemHandler);
+    socket.on("message_history", (history: Message[]) => {
+    setMessages(history);
+    });
 
     return () => {
       socket.off("receive_message", messageHandler);
