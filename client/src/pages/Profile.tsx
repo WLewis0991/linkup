@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState, useRef, useMemo } from "react";
 import { api } from "../api/axios";
 import { LoadingSpinner } from "../components/LoadingSpinner";
@@ -81,10 +81,9 @@ export default function Profile() {
         .upload(filePath, selectedFile, { upsert: true });
       if (uploadErr) throw uploadErr;
     const { data } = supabase.storage.from("avatars").getPublicUrl(filePath);
-    const avatarUrl = `${data.publicUrl}?t=${Date.now()}`;
+      const avatarUrl = data.publicUrl;
 
-    await api.patch(`/api/user/${user.id}`, { avatar: avatarUrl });
-
+      await api.patch(`/api/user/${user.id}`, { avatar: avatarUrl });
     setUser((prev) => prev ? { ...prev, avatar: avatarUrl } : prev);
     closeDialog();
         } catch (err) {
@@ -157,6 +156,7 @@ export default function Profile() {
           }}
         >
           {[
+            { label: "Direct Mesage", value: <Link to={`/home/dm/${user.id}`}>Click Here</Link> },
             { label: "Username", value: user.username },
             { label: "Email", value: user.email },
             { label: "User ID", value: user.id },

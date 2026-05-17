@@ -14,6 +14,7 @@ import Groups from "./components/Groups"
 import People from "./pages/People"
 import ChatRooms from "./pages/ChatRooms"
 import Welcome from "./pages/Welcome"
+import DmContainer from "./components/DmContainer"
 
 function App() {
 
@@ -63,6 +64,7 @@ return (
                 <Route path="messages" element={<Messages />} />
                 <Route path="rooms" element={<ChatRooms />} />
                 <Route path="chat/:id" element={<ChatContainer />} />
+                <Route path="dm/:id" element={<DmContainer />} />
               </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
