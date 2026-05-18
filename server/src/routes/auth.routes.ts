@@ -1,10 +1,9 @@
-import express, {Request, Response} from "express";
+import express, { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import type { User } from "../types/auth.types";
 import prisma from "../config/db";
-
 
 dotenv.config();
 
@@ -20,13 +19,15 @@ router.post("/register", async (req: Request<{}, {}, User>, res: Response) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    return res.status(400).json({ message: "Username and password are required" });
+    return res
+      .status(400)
+      .json({ message: "Username and password are required" });
   }
 
   try {
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
-      where: { username }
+      where: { username },
     });
 
     if (existingUser) {
@@ -37,14 +38,14 @@ router.post("/register", async (req: Request<{}, {}, User>, res: Response) => {
     const user = await prisma.user.create({
       data: {
         username,
-        password: hashedPassword
-      }
+        password: hashedPassword,
+      },
     });
 
     const token = jwt.sign(
       { userId: user.id, username: user.username },
       JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     return res.status(201).json({ token });
@@ -61,12 +62,14 @@ router.post("/login", async (req: Request<{}, {}, User>, res: Response) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    return res.status(400).json({ message: "Username and password are required" });
+    return res
+      .status(400)
+      .json({ message: "Username and password are required" });
   }
 
   try {
     const user = await prisma.user.findUnique({
-      where: { username }
+      where: { username },
     });
 
     if (!user) {
@@ -81,7 +84,7 @@ router.post("/login", async (req: Request<{}, {}, User>, res: Response) => {
     const token = jwt.sign(
       { userId: user.id, username: user.username },
       JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     return res.json({ token });

@@ -20,7 +20,7 @@ app.use(cors({ origin: process.env.FRONTEND_URL || "http://localhost:5173" }));
 app.use(express.json());
 
 app.get("/", (_req: Request, res: Response) => {
-    res.json({ status: "ok", message: "Server is healthy 🍏" });
+  res.json({ status: "ok", message: "Server is healthy 🍏" });
 });
 
 // Routes
@@ -28,14 +28,11 @@ app.use("/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/rooms", roomRoutes);
 
-
-
-
 // Socket.IO
 initializeSocket(httpServer);
 
 prisma.$connect();
 
 httpServer.listen(PORT, () => {
-    console.log(`🚀 Server is running on ${PORT}`);
+  console.log(`🚀 Server is running on ${PORT}`);
 });

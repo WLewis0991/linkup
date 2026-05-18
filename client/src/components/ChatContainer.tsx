@@ -4,7 +4,6 @@ import type { Message } from "../types/Types";
 import MessageBubble from "./MessageBubble";
 import { useLocation } from "react-router-dom";
 
-
 export default function ChatContainer() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -14,7 +13,9 @@ export default function ChatContainer() {
   const state = useLocation().state as { name: string } | null;
 
   const currentRoomRef = useRef(currentRoom);
-  useEffect(() => { currentRoomRef.current = currentRoom; }, [currentRoom]);
+  useEffect(() => {
+    currentRoomRef.current = currentRoom;
+  }, [currentRoom]);
 
   const joinRoom = useCallback((newRoom: string) => {
     const socket = getSocket();
@@ -65,13 +66,14 @@ export default function ChatContainer() {
     socket.on("receive_message", messageHandler);
     socket.on("system_message", systemHandler);
     socket.on("message_history", (history: Message[]) => {
-    setMessages(history);
+      setMessages(history);
     });
 
     return () => {
       socket.off("receive_message", messageHandler);
       socket.off("system_message", systemHandler);
-      if (currentRoomRef.current) socket.emit("leave_room", currentRoomRef.current);
+      if (currentRoomRef.current)
+        socket.emit("leave_room", currentRoomRef.current);
     };
   }, []);
 
@@ -106,7 +108,11 @@ export default function ChatContainer() {
             if (e.key === "Enter") sendMessage();
           }}
         />
-        <button onClick={sendMessage} disabled={!currentRoom} className="dark:bg-slate-900 dark:text-white p-2 rounded">
+        <button
+          onClick={sendMessage}
+          disabled={!currentRoom}
+          className="dark:bg-slate-900 dark:text-white p-2 rounded"
+        >
           Send
         </button>
       </div>

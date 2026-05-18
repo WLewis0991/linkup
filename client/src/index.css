@@ -3,8 +3,12 @@
 @tailwind utilities;
 
 @keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 .fade-out-scroll {
@@ -13,7 +17,8 @@
   animation-range: exit 0% exit 30%;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
 }
-

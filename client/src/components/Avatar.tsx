@@ -1,20 +1,20 @@
-import { DEFAULT_AVATAR } from '../config/assets'
+import { DEFAULT_AVATAR } from "../config/assets";
 
 interface AvatarProps {
-  avatarUrl?: string | null
-  name?: string
-  className?: string
+  avatarUrl?: string | null;
+  name?: string;
+  className?: string;
 }
 
-export function Avatar({ avatarUrl, name = 'User', className }: AvatarProps) {
+export function Avatar({ avatarUrl, name = "User", className }: AvatarProps) {
   return (
     <img
       src={avatarUrl ?? DEFAULT_AVATAR}
       alt={name}
       className={className}
       onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-        e.currentTarget.src = DEFAULT_AVATAR
+        e.currentTarget.src = DEFAULT_AVATAR;
       }}
     />
-  )
+  );
 }

@@ -19,19 +19,29 @@ function Field({ label, error, ...props }: InputProps) {
       </label>
       <input
         {...props}
-        onFocus={(e) => { setFocused(true); props.onFocus?.(e); }}
-        onBlur={(e) => { setFocused(false); props.onBlur?.(e); }}
+        onFocus={(e) => {
+          setFocused(true);
+          props.onFocus?.(e);
+        }}
+        onBlur={(e) => {
+          setFocused(false);
+          props.onBlur?.(e);
+        }}
         className="w-full rounded-xl px-4 py-3 text-sm outline-none transition-all"
         style={{
           fontFamily: "'DM Sans', sans-serif",
           background: focused
-            ? (isDark ? "#334155" : "#fff")
-            : (isDark ? "#1e293b" : "#f8fafc"),
+            ? isDark
+              ? "#334155"
+              : "#fff"
+            : isDark
+              ? "#1e293b"
+              : "#f8fafc",
           border: error
             ? "1.5px solid #ef4444"
             : focused
-            ? "1.5px solid #94a3b8"
-            : "1.5px solid #94a3b8",
+              ? "1.5px solid #94a3b8"
+              : "1.5px solid #94a3b8",
           color: isDark ? "#f1f5f9" : "#0f172a",
           ...props.style,
         }}
@@ -90,12 +100,11 @@ export default function Register() {
       if (data.token) {
         localStorage.setItem("token", data.token);
 
-
         await connectSocket();
         await axios.post(
           `http://localhost:3000/api/rooms/General/join`,
-          {  },
-          { headers: { Authorization: `Bearer ${data.token}` } }
+          {},
+          { headers: { Authorization: `Bearer ${data.token}` } },
         );
         navigate("/home");
       } else {
@@ -121,10 +130,14 @@ export default function Register() {
         <div
           className="rounded-2xl overflow-hidden"
           style={{
-            background: isDark ? "rgba(15,23,42,0.80)" : "rgba(255,255,255,0.82)",
+            background: isDark
+              ? "rgba(15,23,42,0.80)"
+              : "rgba(255,255,255,0.82)",
             backdropFilter: "blur(24px)",
             WebkitBackdropFilter: "blur(24px)",
-            border: isDark ? "1px solid rgba(71,85,105,0.5)" : "1px solid rgba(255,255,255,0.9)",
+            border: isDark
+              ? "1px solid rgba(71,85,105,0.5)"
+              : "1px solid rgba(255,255,255,0.9)",
             boxShadow: isDark
               ? "0 8px 40px rgba(0,0,0,0.40), 0 1px 2px rgba(0,0,0,0.20)"
               : "0 8px 40px rgba(15,23,42,0.10), 0 1px 2px rgba(15,23,42,0.06)",

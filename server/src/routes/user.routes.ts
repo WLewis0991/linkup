@@ -3,18 +3,17 @@ import prisma from "../config/db";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { Request, Response } from "express";
 
-
 const router = express.Router();
 type ParamsWithId = { id: string };
 
 router.get("/", authMiddleware, async (req, res) => {
-const users = await prisma.user.findMany({
-  where: {
-    id: {
-      not: req.user?.userId,
+  const users = await prisma.user.findMany({
+    where: {
+      id: {
+        not: req.user?.userId,
+      },
     },
-  },
-});
+  });
 
   res.json(users);
 });
@@ -49,19 +48,23 @@ router.get("/:id", authMiddleware, async (req: Request<ParamsWithId>, res) => {
   }
 });
 
-router.patch("/:id", authMiddleware, async (req: Request<ParamsWithId>, res) => {
-  const { id } = req.params;
-  const { avatar } = req.body;
+router.patch(
+  "/:id",
+  authMiddleware,
+  async (req: Request<ParamsWithId>, res) => {
+    const { id } = req.params;
+    const { avatar } = req.body;
 
-  try {
-    const updated = await prisma.user.update({
-      where: { id },
-      data: { avatar },
-    });
-    return res.json(updated);
-  } catch (err) {
-    console.error("User update error:", err);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-});
+    try {
+      const updated = await prisma.user.update({
+        where: { id },
+        data: { avatar },
+      });
+      return res.json(updated);
+    } catch (err) {
+      console.error("User update error:", err);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);
 export default router;

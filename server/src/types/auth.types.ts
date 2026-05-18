@@ -1,11 +1,11 @@
-import { JwtPayload } from "jsonwebtoken"
+import { JwtPayload } from "jsonwebtoken";
 
 interface User {
-  id:string, 
-  username:string,  
-  email:string, 
-  password:string,
-  avatar:string, 
+  id: string;
+  username: string;
+  email: string;
+  password: string;
+  avatar: string;
 }
 
 export interface CustomJwtPayload extends JwtPayload {
@@ -22,4 +22,4 @@ declare global {
   }
 }
 
-export type { User , JwtPayload }
+export type { User, JwtPayload };

@@ -59,8 +59,8 @@ export default function LinkUpLogo({
     variant === "bubble"
       ? bubbleStyle
       : variant === "flat"
-      ? flatStyle
-      : outlineStyle;
+        ? flatStyle
+        : outlineStyle;
 
   const sw = (base: number) => (base * iconSize) / 48;
 
@@ -78,7 +78,10 @@ export default function LinkUpLogo({
         <rect x="4" y="6" width="30" height="22" rx="9" fill={accentColor} />
         <path d="M10 28 L7 36 L18 30" fill={accentColor} />
         <line
-          x1="19" y1="21" x2="19" y2="11"
+          x1="19"
+          y1="21"
+          x2="19"
+          y2="11"
           stroke="#fff"
           strokeWidth={sw(2.8)}
           strokeLinecap="round"
@@ -93,7 +96,10 @@ export default function LinkUpLogo({
         />
         <circle cx="38" cy="34" r="7" fill={secondaryColor} />
         <line
-          x1="38" y1="37.5" x2="38" y2="31.5"
+          x1="38"
+          y1="37.5"
+          x2="38"
+          y2="31.5"
           stroke="#fff"
           strokeWidth={sw(2.2)}
           strokeLinecap="round"

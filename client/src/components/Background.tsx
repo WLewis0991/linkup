@@ -21,8 +21,8 @@ export function Background() {
     // Resolve icon color based on current color scheme
     const getIconColor = () =>
       document.documentElement.classList.contains("dark")
-        ? "#e2e8f0"   // slate-200 — visible on dark bg
-        : "#0f172a";  // slate-900 — visible on light bg
+        ? "#e2e8f0" // slate-200 — visible on dark bg
+        : "#0f172a"; // slate-900 — visible on light bg
 
     // React to dark mode toggles at runtime
     const darkObserver = new MutationObserver(() => {});
@@ -31,14 +31,35 @@ export function Background() {
       attributeFilter: ["class"],
     });
 
-    type IconType = "bubble-sm" | "bubble-md" | "bubble-lg" | "dot" | "ring" | "plus" | "dash";
+    type IconType =
+      | "bubble-sm"
+      | "bubble-md"
+      | "bubble-lg"
+      | "dot"
+      | "ring"
+      | "plus"
+      | "dash";
 
     const icons: {
-      x: number; y: number; type: IconType; size: number;
-      opacity: number; speed: number; drift: number; phase: number;
+      x: number;
+      y: number;
+      type: IconType;
+      size: number;
+      opacity: number;
+      speed: number;
+      drift: number;
+      phase: number;
     }[] = [];
 
-    const types: IconType[] = ["bubble-sm", "bubble-md", "bubble-lg", "dot", "ring", "plus", "dash"];
+    const types: IconType[] = [
+      "bubble-sm",
+      "bubble-md",
+      "bubble-lg",
+      "dot",
+      "ring",
+      "plus",
+      "dash",
+    ];
     for (let i = 0; i < 160; i++) {
       icons.push({
         x: Math.random() * window.innerWidth,
@@ -57,7 +78,7 @@ export function Background() {
       x: number,
       y: number,
       s: number,
-      dots: number
+      dots: number,
     ) => {
       const r = s;
       ctx.beginPath();
@@ -74,7 +95,13 @@ export function Background() {
         const spacing = s * 0.3;
         for (let d = 0; d < dots; d++) {
           ctx.beginPath();
-          ctx.arc(x + (d - (dots - 1) / 2) * spacing, y - s * 0.05, dr, 0, Math.PI * 2);
+          ctx.arc(
+            x + (d - (dots - 1) / 2) * spacing,
+            y - s * 0.05,
+            dr,
+            0,
+            Math.PI * 2,
+          );
           ctx.fill();
         }
       }
@@ -99,9 +126,15 @@ export function Background() {
         ctx.lineWidth = 1;
 
         switch (icon.type) {
-          case "bubble-sm": drawBubble(ctx, ix, iy, icon.size * 0.7, 0); break;
-          case "bubble-md": drawBubble(ctx, ix, iy, icon.size * 0.9, 3); break;
-          case "bubble-lg": drawBubble(ctx, ix, iy, icon.size, 3); break;
+          case "bubble-sm":
+            drawBubble(ctx, ix, iy, icon.size * 0.7, 0);
+            break;
+          case "bubble-md":
+            drawBubble(ctx, ix, iy, icon.size * 0.9, 3);
+            break;
+          case "bubble-lg":
+            drawBubble(ctx, ix, iy, icon.size, 3);
+            break;
           case "dot":
             ctx.beginPath();
             ctx.arc(ix, iy, icon.size * 0.15, 0, Math.PI * 2);
@@ -115,15 +148,18 @@ export function Background() {
           case "plus": {
             const h = icon.size * 0.45;
             ctx.beginPath();
-            ctx.moveTo(ix - h, iy); ctx.lineTo(ix + h, iy);
-            ctx.moveTo(ix, iy - h); ctx.lineTo(ix, iy + h);
+            ctx.moveTo(ix - h, iy);
+            ctx.lineTo(ix + h, iy);
+            ctx.moveTo(ix, iy - h);
+            ctx.lineTo(ix, iy + h);
             ctx.stroke();
             break;
           }
           case "dash": {
             const w = icon.size * 0.55;
             ctx.beginPath();
-            ctx.moveTo(ix - w, iy); ctx.lineTo(ix + w, iy);
+            ctx.moveTo(ix - w, iy);
+            ctx.lineTo(ix + w, iy);
             ctx.stroke();
             break;
           }

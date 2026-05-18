@@ -7,4 +7,4 @@ type Message = {
   timestamp: string;
 };
 
-export type {Message};
+export type { Message };

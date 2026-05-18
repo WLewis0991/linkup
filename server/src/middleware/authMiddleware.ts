@@ -5,7 +5,7 @@ import { CustomJwtPayload } from "../types/auth.types";
 export function authMiddleware(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const header = req.headers.authorization;
 
@@ -17,7 +17,7 @@ export function authMiddleware(
   try {
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET as string
+      process.env.JWT_SECRET as string,
     ) as CustomJwtPayload;
 
     req.user = decoded;

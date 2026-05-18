@@ -191,19 +191,48 @@ export default function SplashScreenV3() {
         Add `class="dark"` to <html> (or use a toggle) to enable dark mode.
       */}
       <div className="splash bg-white dark:bg-gray-950 dark:bg-opacity-5">
-
         {/* logo */}
         <div className={cls("logo-wrap")}>
           {/* logo-bubble: white card in light, dark card in dark */}
           <div className="logo-bubble bg-white dark:bg-gray-800 shadow-[0_8px_32px_rgba(255,100,130,0.18),0_2px_8px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_32px_rgba(255,100,130,0.12)]">
             <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-              <rect x="4" y="6" width="30" height="22" rx="9" fill="#ff6482"/>
-              <path d="M10 28 L7 36 L18 30" fill="#ff6482"/>
-              <line x1="19" y1="21" x2="19" y2="11" stroke="#fff" strokeWidth="2.8" strokeLinecap="round"/>
-              <path d="M14.5 15 L19 10 L23.5 15" fill="none" stroke="#fff" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"/>
-              <circle cx="38" cy="34" r="7" fill="#5b7cf6"/>
-              <line x1="38" y1="37.5" x2="38" y2="31.5" stroke="#fff" strokeWidth="2.2" strokeLinecap="round"/>
-              <path d="M35.2 33.8 L38 31 L40.8 33.8" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+              <rect x="4" y="6" width="30" height="22" rx="9" fill="#ff6482" />
+              <path d="M10 28 L7 36 L18 30" fill="#ff6482" />
+              <line
+                x1="19"
+                y1="21"
+                x2="19"
+                y2="11"
+                stroke="#fff"
+                strokeWidth="2.8"
+                strokeLinecap="round"
+              />
+              <path
+                d="M14.5 15 L19 10 L23.5 15"
+                fill="none"
+                stroke="#fff"
+                strokeWidth="2.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <circle cx="38" cy="34" r="7" fill="#5b7cf6" />
+              <line
+                x1="38"
+                y1="37.5"
+                x2="38"
+                y2="31.5"
+                stroke="#fff"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+              />
+              <path
+                d="M35.2 33.8 L38 31 L40.8 33.8"
+                fill="none"
+                stroke="#fff"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </div>
         </div>
@@ -239,7 +268,6 @@ export default function SplashScreenV3() {
         <Link to={token ? "/home" : "/sign-in"}>
           <button className={cls("enter-btn")}>Get started</button>
         </Link>
-
       </div>
     </>
   );

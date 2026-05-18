@@ -298,10 +298,7 @@ export default function Welcome() {
       <style>{styles}</style>
 
       <div className="lu-home h-full overflow-y-auto px-6 py-10 dark:text-slate-100 bg-zinc-100 dark:bg-slate-950 dark:bg-opacity-10 text-slate-800">
-
-
         <div className="lu-inner overflow-y-auto">
-
           {/* ── HERO ── */}
           <div className="lu-hero">
             <br />
@@ -315,12 +312,15 @@ export default function Welcome() {
           <div
             className={c("lu-divider")}
             style={{
-              background: "linear-gradient(to right, transparent, rgba(255,100,130,0.22), rgba(91,124,246,0.22), transparent)",
+              background:
+                "linear-gradient(to right, transparent, rgba(255,100,130,0.22), rgba(91,124,246,0.22), transparent)",
             }}
           />
 
           {/* ── FEATURES ── */}
-          <p className={`${c("lu-section-label")} text-gray-400 dark:text-gray-600`}>
+          <p
+            className={`${c("lu-section-label")} text-gray-400 dark:text-gray-600`}
+          >
             What's inside
           </p>
 
@@ -343,7 +343,9 @@ export default function Welcome() {
                       </span>
                     )}
                   </div>
-                  <p className="lu-feat-desc text-gray-500 dark:text-gray-500">{f.desc}</p>
+                  <p className="lu-feat-desc text-gray-500 dark:text-gray-500">
+                    {f.desc}
+                  </p>
                 </div>
               </div>
             ))}

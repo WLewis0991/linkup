@@ -13,7 +13,9 @@ export default function DmContainer() {
   const { id } = useParams();
 
   const currentRecipientRef = useRef(currentRecipient);
-  useEffect(() => { currentRecipientRef.current = currentRecipient; }, [currentRecipient]);
+  useEffect(() => {
+    currentRecipientRef.current = currentRecipient;
+  }, [currentRecipient]);
 
   const joinDm = useCallback((recipientId: string) => {
     const socket = getSocket();
@@ -71,7 +73,8 @@ export default function DmContainer() {
       socket.off("receive_dm", messageHandler);
       socket.off("dm_system_message", systemHandler);
       socket.off("dm_history", historyHandler);
-      if (currentRecipientRef.current) socket.emit("leave_dm", currentRecipientRef.current);
+      if (currentRecipientRef.current)
+        socket.emit("leave_dm", currentRecipientRef.current);
     };
   }, []);
 
@@ -106,7 +109,11 @@ export default function DmContainer() {
             if (e.key === "Enter") sendMessage();
           }}
         />
-        <button onClick={sendMessage} disabled={!currentRecipient} className="dark:bg-slate-900 dark:text-white p-2 rounded">
+        <button
+          onClick={sendMessage}
+          disabled={!currentRecipient}
+          className="dark:bg-slate-900 dark:text-white p-2 rounded"
+        >
           Send
         </button>
       </div>
