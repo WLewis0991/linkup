@@ -49,6 +49,34 @@ router.get("/:id", authMiddleware, async (req: Request<ParamsWithId>, res) => {
 });
 
 router.patch(
+  "/bios",
+  authMiddleware,
+  async (req: Request, res: Response) => {
+    const { userId, bio } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ error: "userId is required" });
+    }
+
+    if (typeof bio === "string" && bio.length > 280) {
+      return res.status(400).json({ error: "Bio must be 280 characters or fewer" });
+    }
+
+    try {
+      const updated = await prisma.user.update({
+        where: { id: userId },
+        data: { bios: bio?.trim() ?? null },
+      });
+      return res.json({ bios: updated.bios });
+    } catch (err) {
+      console.error("Bio update error:", err);
+      return res.status(500).json({ error: "Failed to update bio" });
+    }
+  },
+);
+
+
+router.patch(
   "/:id",
   authMiddleware,
   async (req: Request<ParamsWithId>, res) => {
