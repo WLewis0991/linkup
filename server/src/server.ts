@@ -8,6 +8,7 @@ import { createServer } from "http";
 import { initializeSocket } from "./sockets/sockets";
 import userRoutes from "./routes/user.routes";
 import roomRoutes from "./routes/rooms.routes";
+import dmRoutes from "./routes/dms.routes"
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.get("/", (_req: Request, res: Response) => {
 app.use("/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/rooms", roomRoutes);
+app.use("/api/dms", dmRoutes);
 
 // Socket.IO
 initializeSocket(httpServer);

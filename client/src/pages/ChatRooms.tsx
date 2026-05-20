@@ -11,16 +11,16 @@ interface ChatRooms {
 export default function ChatRooms() {
   const [rooms, setRooms] = useState<ChatRooms[]>([]);
 
-  const fetchRooms = async () => {
-    try {
-      const res = await api.get("api/rooms/my-rooms");
-      setRooms(res.data);
-    } catch (error) {
-      console.error("Error fetching rooms:", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const res = await api.get("api/rooms/my-rooms");
+        setRooms(res.data);
+      } catch (error) {
+        console.error("Error fetching rooms:", error);
+      }
+    };
+
     fetchRooms();
   }, []);
 
