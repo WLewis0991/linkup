@@ -29,7 +29,7 @@ export default function Messages() {
       ) : (
         <ul className="space-y-4">
           {conversations.map((conversation) => (
-            <DMCard key={conversation.id} conversation={conversation} currentUserId={user.userId} />
+            <DMCard key={conversation.id} conversation={conversation} />
           ))}
         </ul>
       )}

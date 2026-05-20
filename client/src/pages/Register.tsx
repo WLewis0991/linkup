@@ -110,8 +110,13 @@ export default function Register() {
       } else {
         navigate("/login");
       }
-    } catch (err: any) {
-      setError(err.response?.data?.message || "Registration failed");
+    } catch (err) {
+      const error = err as Error;
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "Registration failed");
+      } else {
+        setError("Registration failed");
+      }
     } finally {
       setLoading(false);
     }

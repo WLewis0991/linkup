@@ -136,7 +136,7 @@ export default function Profile() {
             <Avatar
               avatarUrl={user.avatar}
               name={user.username}
-              className="min-h-30 min-w-30 rounded-full"
+              className="min-h-30 min-w-30 max-h-52 rounded-full"
             />
             {isOwnProfile && (
               <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -194,10 +194,7 @@ export default function Profile() {
           }}
         >
           {[
-            {
-              label: "Direct Mesage",
-              value: <Link to={`/home/dm/${user.id}`}>Click Here</Link>,
-            },
+            ...(!isOwnProfile ? [{ label: "Send DM", value: <Link to={`/home/dm/${user.id}`} state={{ conversationId: user.id }} className="text-blue-600 hover:underline">Click here</Link> }] : []),
             { label: "Username", value: user.username },
             { label: "Email", value: user.email },
             { label: "User ID", value: user.id },
