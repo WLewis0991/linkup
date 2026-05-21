@@ -11,7 +11,8 @@ type UserProfile = {
   username: string;
   email: string;
   avatar?: string | null;
-  bio?: string | null;
+  bios?: string | null;
+  createdAt: string;
 };
 
 const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
@@ -110,7 +111,7 @@ export default function Profile() {
   // ── Bio helpers ─────────────────────────────────────────────────
   const openBioDialog = () => {
     if (!isOwnProfile) return;
-    setBioInput(user?.bio ?? "");
+    setBioInput(user?.bios ?? "");
     setBioError("");
     setBioDialogOpen(true);
   };
@@ -120,8 +121,7 @@ export default function Profile() {
     setBioInput("");
     setBioError("");
   };
-
-  const handleBioSave = async () => {
+const handleBioSave = async () => {
     if (!user || !isOwnProfile) return;
     if (bioInput.length > BIO_MAX) {
       setBioError(`Bio must be ${BIO_MAX} characters or fewer.`);
@@ -129,8 +129,8 @@ export default function Profile() {
     }
     setBioSaving(true);
     try {
-      await api.patch(`/api/user/bios`, { userId: user.id, bio: bioInput.trim() });
-      setUser((prev) => prev ? { ...prev, bio: bioInput.trim() } : prev);
+      await api.patch(`/api/user/${user.id}`, { bios: bioInput.trim() });
+      setUser((prev) => prev ? { ...prev, bios: bioInput.trim() } : prev);
       closeBioDialog();
     } catch (err) {
       setBioError("Failed to save bio. Please try again.");
@@ -199,7 +199,7 @@ export default function Profile() {
               className="group relative text-sm dark:text-slate-400 text-slate-500 italic max-w-xs text-center hover:dark:text-slate-200 hover:text-slate-700 transition-colors"
               title="Edit bio"
             >
-              {user.bio?.trim() ? user.bio : "No bio yet. Click to add one."}
+              {user.bios?.trim() ? user.bios : "No bio yet. Click to add one."}
               <span className="ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity inline-block">
                 <svg className="w-3.5 h-3.5 inline -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 012.828 0l.172.172a2 2 0 010 2.828L12 16H9v-3z" />
@@ -208,7 +208,7 @@ export default function Profile() {
             </button>
           ) : (
             <p className="text-sm dark:text-slate-500 text-slate-400 italic max-w-xs">
-              {user.bio?.trim() || "No bio yet."}
+              {user.bios?.trim() || "No bio yet."}
             </p>
           )}
         </div>
@@ -221,6 +221,7 @@ export default function Profile() {
               : []),
             { label: "Username", value: user.username },
             { label: "Email", value: user.email },
+            { label: "Date Joined", value: user.createdAt },
           ].map(({ label, value }, i, arr) => (
             <div
               key={label}

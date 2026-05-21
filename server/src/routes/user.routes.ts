@@ -34,6 +34,7 @@ router.get("/:id", authMiddleware, async (req: Request<ParamsWithId>, res) => {
         email: true,
         avatar: true,
         createdAt: true,
+        bios: true, // ✅ added
       },
     });
 
@@ -48,51 +49,23 @@ router.get("/:id", authMiddleware, async (req: Request<ParamsWithId>, res) => {
   }
 });
 
-router.patch(
-  "/bios",
-  authMiddleware,
-  async (req: Request, res: Response) => {
-    const { userId, bio } = req.body;
+router.patch("/:id", authMiddleware, async (req: Request<ParamsWithId>, res) => {
+  const { id } = req.params;
+  const { avatar, bios } = req.body; // ✅ added bios
 
-    if (!userId) {
-      return res.status(400).json({ error: "userId is required" });
-    }
+  try {
+    const updated = await prisma.user.update({
+      where: { id },
+      data: {
+        ...(avatar !== undefined && { avatar }),
+        ...(bios !== undefined && { bios }),
+      },
+    });
+    return res.json(updated);
+  } catch (err) {
+    console.error("User update error:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
 
-    if (typeof bio === "string" && bio.length > 280) {
-      return res.status(400).json({ error: "Bio must be 280 characters or fewer" });
-    }
-
-    try {
-      const updated = await prisma.user.update({
-        where: { id: userId },
-        data: { bios: bio?.trim() ?? null },
-      });
-      return res.json({ bios: updated.bios });
-    } catch (err) {
-      console.error("Bio update error:", err);
-      return res.status(500).json({ error: "Failed to update bio" });
-    }
-  },
-);
-
-
-router.patch(
-  "/:id",
-  authMiddleware,
-  async (req: Request<ParamsWithId>, res) => {
-    const { id } = req.params;
-    const { avatar } = req.body;
-
-    try {
-      const updated = await prisma.user.update({
-        where: { id },
-        data: { avatar },
-      });
-      return res.json(updated);
-    } catch (err) {
-      console.error("User update error:", err);
-      return res.status(500).json({ error: "Internal server error" });
-    }
-  },
-);
 export default router;
