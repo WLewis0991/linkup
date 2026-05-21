@@ -57,11 +57,13 @@ export default function Register() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{
     username?: string;
     password?: string;
+    email?: string;
     confirm?: string;
   }>({});
   const [error, setError] = useState("");
@@ -76,6 +78,7 @@ export default function Register() {
     const e: typeof errors = {};
     if (!username) e.username = "Username is required";
     if (!password) e.password = "Password is required";
+    if (!email) e.email = "Email is reuired";
     if (password.length < 6) e.password = "Min 6 characters";
     if (confirm !== password) e.confirm = "Passwords do not match";
     return e;
@@ -95,7 +98,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const data = await register(username, password);
+      const data = await register(username, password, email);
 
       if (data.token) {
         localStorage.setItem("token", data.token);
@@ -160,6 +163,17 @@ export default function Register() {
               }}
               error={errors.username}
             />
+            <Field
+              label="EMAIL"
+              type="email"
+              placeholder="name@email.com"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setErrors((x) => ({ ...x, email: undefined }));
+              }}
+              error={errors.email}
+            />            
             <Field
               label="PASSWORD"
               type="password"

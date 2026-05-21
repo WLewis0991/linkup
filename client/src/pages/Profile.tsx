@@ -190,7 +190,6 @@ export default function Profile() {
 
           <div>
             <h1 className="text-2xl font-bold tracking-tight">{user.username}</h1>
-            <p className="text-sm mt-1 dark:text-slate-400 text-slate-500">{user.email}</p>
           </div>
 
           {/* Bio — clickable on own profile */}
@@ -222,7 +221,6 @@ export default function Profile() {
               : []),
             { label: "Username", value: user.username },
             { label: "Email", value: user.email },
-            { label: "User ID", value: user.id },
           ].map(({ label, value }, i, arr) => (
             <div
               key={label}
@@ -241,7 +239,7 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* ── Avatar upload dialog ─────────────────────────────────── */}
+      {/* Avatar upload dialog */}
       {dialogOpen && isOwnProfile && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
@@ -299,7 +297,7 @@ export default function Profile() {
         </div>
       )}
 
-      {/* ── Bio edit dialog ──────────────────────────────────────── */}
+      {/* Bio edit dialog */}
       {bioDialogOpen && isOwnProfile && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"

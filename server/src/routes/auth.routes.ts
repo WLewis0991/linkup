@@ -16,7 +16,7 @@ if (!JWT_SECRET) {
 
 //Register new users
 router.post("/register", async (req: Request<{}, {}, User>, res: Response) => {
-  const { username, password } = req.body;
+  const { username, password, email } = req.body;
 
   if (!username || !password) {
     return res
@@ -39,6 +39,7 @@ router.post("/register", async (req: Request<{}, {}, User>, res: Response) => {
       data: {
         username,
         password: hashedPassword,
+        email,
       },
     });
 
