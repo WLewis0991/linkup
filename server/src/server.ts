@@ -9,6 +9,7 @@ import { initializeSocket } from "./sockets/sockets";
 import userRoutes from "./routes/user.routes";
 import roomRoutes from "./routes/rooms.routes";
 import dmRoutes from "./routes/dms.routes"
+import followRoutes from "./routes/follow.routes"
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use("/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/rooms", roomRoutes);
 app.use("/api/dms", dmRoutes);
+app.use("/api/follows", followRoutes)
 
 // Socket.IO
 initializeSocket(httpServer);
