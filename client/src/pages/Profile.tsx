@@ -217,7 +217,7 @@ const handleBioSave = async () => {
         <div className="rounded-2xl overflow-hidden" style={glassStyle(true)}>
           {[
             ...(!isOwnProfile
-              ? [{ label: "Send DM", value: <Link to={`/home/dm/${user.id}`} state={{ conversationId: user.id }} className="text-blue-600 hover:underline">Click here</Link> }]
+              ? [{ label: "Send DM", value: <Link to={`/home/dm/${user.id}`} state={{ conversationId: user.id, username: user.username }} className="text-blue-600 hover:underline">Click here</Link> }]
               : []),
             { label: "Username", value: user.username },
             { label: "Email", value: user.email },

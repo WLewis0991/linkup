@@ -19,7 +19,23 @@ model User {
   roomMembers          RoomMember[]
   conversationParticipants ConversationParticipant[]
 
+  //Follow relations
+  followers Follow[]  @relation("UserFollowers") // people followin this user
+  following Follow[]  @relation("UserFollowing") // people this user follows
+
   @@map("users")
+}
+
+model Follow {
+  followerId String  @map("follower_id") // the person who is following
+  followingId String @map("following_id")  // the person being followed
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  follower User @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
+  @@map("follows")
 }
 
 model Room {

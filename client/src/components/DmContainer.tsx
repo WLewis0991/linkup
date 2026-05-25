@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { getSocket } from "../sockets/socket";
 import type { Message } from "../types/Types";
 import MessageBubble from "./MessageBubble";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 export default function DmContainer() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -11,6 +11,8 @@ export default function DmContainer() {
   const [systemMessages, setSystemMessages] = useState<string[]>([]);
 
   const { id } = useParams();
+  const { state } = useLocation();
+  const username = state?.username ?? id;
 
   const currentRecipientRef = useRef(currentRecipient);
   useEffect(() => {
@@ -80,7 +82,7 @@ export default function DmContainer() {
 
   return (
     <div className="dark:bg-slate-950 dark:text-white bg-zinc-100 w-full h-full p-4 flex flex-col min-h-0 dark:bg-opacity-10">
-      <h2>DM: {currentRecipient ?? "None"}</h2>
+      <h2>DM: {username ?? "None"}</h2>
 
       <div className="message-box w-full flex-1 min-h-0 mb-4 flex flex-col gap-2 overflow-y-auto">
         <div className="mt-auto" />

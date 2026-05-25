@@ -34,7 +34,7 @@ router.get("/:id", authMiddleware, async (req: Request<ParamsWithId>, res) => {
         email: true,
         avatar: true,
         createdAt: true,
-        bios: true, // ✅ added
+        bios: true,
       },
     });
 
