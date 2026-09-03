@@ -1,18 +1,19 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LinkUpLogo from "./LinkUpLogo";
 import { DarkModeToggle } from "../hooks/LightButton";
-import { jwtDecode } from "jwt-decode";
-
-type JwtPayload = {
-  username: string;
-  userId: string;
-};
+import { getCurrentUser } from "../auth/token";
+import { logout } from "../auth/logout";
 
 export default function NavBar() {
-  const token = localStorage.getItem("token");
-  const currentUser = token ? jwtDecode<JwtPayload>(token) : null;
+  const navigate = useNavigate();
+  const currentUser = getCurrentUser();
 
-  if (!token) {
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  if (!currentUser) {
     return null;
   }
 
@@ -38,11 +39,18 @@ export default function NavBar() {
             <h1>Messages</h1>
         </Link>
         <br /> 
-        <Link to={`/home/profile/${currentUser?.userId}`}>
+        <Link to={`/home/profile/${currentUser.userId}`}>
           <h1>Profile</h1>
         </Link>
         <br />
         <DarkModeToggle />
+        <br />
+        <button
+          onClick={handleLogout}
+          className="text-sm text-red-400 hover:text-red-300 transition-colors"
+        >
+          Log out
+        </button>
       </div>
     </>
   );

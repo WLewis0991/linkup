@@ -1,16 +1,9 @@
 import { PrismaClient } from "../../generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
-import dotenv from "dotenv";
+import { env } from "./env";
 
-dotenv.config();
+const adapter = new PrismaPg({ connectionString: env.databaseUrl });
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
-
-const prisma = new PrismaClient({ adapter } as any);
-
-prisma
-  .$connect()
-  .then(() => console.log("🛜 Connected to PostgreSQL"))
-  .catch((err: Error) => console.log("‼️ DB Connection error:", err.message));
+const prisma = new PrismaClient({ adapter });
 
 export default prisma;

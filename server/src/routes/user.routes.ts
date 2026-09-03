@@ -1,6 +1,8 @@
 import express from "express";
 import prisma from "../config/db";
 import { authMiddleware } from "../middleware/authMiddleware";
+import { validate } from "../middleware/validate";
+import { updateProfileSchema } from "../validation/schemas";
 import { Request, Response } from "express";
 
 const router = express.Router();
@@ -12,6 +14,13 @@ router.get("/", authMiddleware, async (req, res) => {
       id: {
         not: req.user?.userId,
       },
+    },
+    select: {
+      id: true,
+      username: true,
+      avatar: true,
+      bios: true,
+      createdAt: true,
     },
   });
 
@@ -49,9 +58,14 @@ router.get("/:id", authMiddleware, async (req: Request<ParamsWithId>, res) => {
   }
 });
 
-router.patch("/:id", authMiddleware, async (req: Request<ParamsWithId>, res) => {
+router.patch("/:id", authMiddleware, validate(updateProfileSchema), async (req: Request<ParamsWithId>, res) => {
   const { id } = req.params;
-  const { avatar, bios } = req.body; // ✅ added bios
+  const { avatar, bios } = req.body;
+
+  // Only allow a user to update their own profile
+  if (id !== req.user?.userId) {
+    return res.status(403).json({ error: "You can only edit your own profile" });
+  }
 
   try {
     const updated = await prisma.user.update({
@@ -59,6 +73,13 @@ router.patch("/:id", authMiddleware, async (req: Request<ParamsWithId>, res) => 
       data: {
         ...(avatar !== undefined && { avatar }),
         ...(bios !== undefined && { bios }),
+      },
+      select: {
+        id: true,
+        username: true,
+        avatar: true,
+        bios: true,
+        createdAt: true,
       },
     });
     return res.json(updated);

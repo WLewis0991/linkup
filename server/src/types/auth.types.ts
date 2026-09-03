@@ -22,4 +22,4 @@ declare global {
   }
 }
 
-export type { User, JwtPayload };
+export type { User };

@@ -1,42 +1,70 @@
 import express from "express";
 import type { Application, Request, Response } from "express";
-import dotenv from "dotenv";
 import cors from "cors";
+import rateLimit from "express-rate-limit";
 import prisma from "./config/db";
+import { env } from "./config/env";
 import authRoutes from "./routes/auth.routes";
 import { createServer } from "http";
 import { initializeSocket } from "./sockets/sockets";
 import userRoutes from "./routes/user.routes";
 import roomRoutes from "./routes/rooms.routes";
-import dmRoutes from "./routes/dms.routes"
-import followRoutes from "./routes/follow.routes"
-
-dotenv.config();
+import dmRoutes from "./routes/dms.routes";
+import followRoutes from "./routes/follow.routes";
 
 const app: Application = express();
-const PORT: number = parseInt(process.env.PORT || "3000", 10);
+const PORT: number = env.port;
 
 const httpServer = createServer(app);
 
-app.use(cors({ origin: process.env.FRONTEND_URL || "http://localhost:5173" }));
+app.use(cors({ origin: env.frontendUrl }));
 app.use(express.json());
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many requests, please try again later" },
+});
+
+app.use("/auth", authLimiter, authRoutes);
+
+app.use("/api/user", userRoutes);
+app.use("/api/rooms", roomRoutes);
+app.use("/api/dms", dmRoutes);
+app.use("/api/follows", followRoutes);
 
 app.get("/", (_req: Request, res: Response) => {
   res.json({ status: "ok", message: "Server is healthy 🍏" });
 });
 
-// Routes
-app.use("/auth", authRoutes);
-app.use("/api/user", userRoutes);
-app.use("/api/rooms", roomRoutes);
-app.use("/api/dms", dmRoutes);
-app.use("/api/follows", followRoutes)
-
 // Socket.IO
 initializeSocket(httpServer);
 
-prisma.$connect();
+async function start() {
+  try {
+    await prisma.$connect();
+    console.log("✅ Connected to database");
+  } catch (err) {
+    console.error("❌ Database connection failed:", err);
+    process.exit(1);
+  }
+}
 
-httpServer.listen(PORT, () => {
+start();
+
+const server = httpServer.listen(PORT, () => {
   console.log(`🚀 Server is running on ${PORT}`);
 });
+
+const shutdown = (signal: string) => () => {
+  console.log(`\n${signal} received —  Graceful shutdown`);
+  server.close(() => {
+    prisma.$disconnect();
+    process.exit(0);
+  });
+};
+
+process.on("SIGTERM", shutdown("SIGTERM"));
+process.on("SIGINT", shutdown("SIGINT"));

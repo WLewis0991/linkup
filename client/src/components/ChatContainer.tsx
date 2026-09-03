@@ -1,14 +1,12 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getSocket } from "../sockets/socket";
-import type { Message } from "../types/Types";
 import MessageBubble from "./MessageBubble";
 import { useLocation } from "react-router-dom";
+import { useMessagesSocket } from "../hooks/useMessagesSocket";
 
 export default function ChatContainer() {
-  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [currentRoom, setCurrentRoom] = useState<string | null>(null);
-  const [systemMessages, setSystemMessages] = useState<string[]>([]);
 
   const state = useLocation().state as { name: string } | null;
 
@@ -17,19 +15,29 @@ export default function ChatContainer() {
     currentRoomRef.current = currentRoom;
   }, [currentRoom]);
 
+  const { messages, systemMessages, messagesEndRef, resetMessages } = useMessagesSocket({
+    receiveEvent: "receive_message",
+    systemEvent: "system_message",
+    historyEvent: "message_history",
+    leaveEvent: "leave_room",
+    activeIdRef: currentRoomRef as React.MutableRefObject<string | null>,
+  });
+
   const joinRoom = useCallback((newRoom: string) => {
     const socket = getSocket();
     if (!socket) return;
     if (currentRoomRef.current) {
       socket.emit("leave_room", currentRoomRef.current);
     }
-    setMessages([]);
+    resetMessages();
     setCurrentRoom(newRoom);
     socket.emit("join_room", newRoom);
-  }, []);
+  }, [resetMessages]);
 
   useEffect(() => {
     if (state?.name) {
+      // Joining a socket room is an imperative side-effect
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       joinRoom(state.name);
     }
   }, [state, joinRoom]);
@@ -41,41 +49,6 @@ export default function ChatContainer() {
     socket.emit("send_message", { text: input, room: currentRoom });
     setInput("");
   };
-
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  useEffect(() => {
-    const socket = getSocket();
-    if (!socket) return;
-
-    const messageHandler = (msg: Message) => {
-      setMessages((prev) => [...prev, msg]);
-    };
-
-    const systemHandler = (text: string) => {
-      setSystemMessages((prev) => [...prev, text]);
-      setTimeout(() => {
-        setSystemMessages((prev) => prev.filter((msg) => msg !== text));
-      }, 3000);
-    };
-
-    socket.on("receive_message", messageHandler);
-    socket.on("system_message", systemHandler);
-    socket.on("message_history", (history: Message[]) => {
-      setMessages(history);
-    });
-
-    return () => {
-      socket.off("receive_message", messageHandler);
-      socket.off("system_message", systemHandler);
-      if (currentRoomRef.current)
-        socket.emit("leave_room", currentRoomRef.current);
-    };
-  }, []);
 
   return (
     <div className="dark:bg-slate-950 dark:text-white bg-zinc-100 w-full h-full p-4 flex flex-col min-h-0 dark:bg-opacity-10">

@@ -2,6 +2,8 @@ import express, { Request, Response } from "express";
 import prisma from "../config/db";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { CustomJwtPayload } from "../types/auth.types";
+import { validate } from "../middleware/validate";
+import { createRoomSchema } from "../validation/schemas";
 
 const router = express.Router();
 
@@ -9,9 +11,10 @@ interface CreateRoomRequest {
   name: string;
   description?: string;
 }
-//Cerate new room
+//Create new room
 router.post(
   "/create",
+  validate(createRoomSchema),
   async (req: Request<{}, {}, CreateRoomRequest>, res: Response) => {
     const { name, description } = req.body;
 

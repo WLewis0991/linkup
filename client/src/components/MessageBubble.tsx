@@ -1,10 +1,5 @@
-import { jwtDecode } from "jwt-decode";
+import { getCurrentUser } from "../auth/token";
 import { Avatar } from "./Avatar";
-
-type JwtPayload = {
-  username: string;
-  id: string;
-};
 
 type Message = {
   from: {
@@ -16,8 +11,7 @@ type Message = {
 };
 
 export default function MessageBubble({ msg }: { msg: Message }) {
-  const token = localStorage.getItem("token");
-  const currentUser = token ? jwtDecode<JwtPayload>(token) : null;
+  const currentUser = getCurrentUser();
 
   const isSender = msg.from.username === currentUser?.username;
 

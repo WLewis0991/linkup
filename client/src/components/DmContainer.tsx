@@ -1,14 +1,12 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getSocket } from "../sockets/socket";
-import type { Message } from "../types/Types";
 import MessageBubble from "./MessageBubble";
 import { useParams, useLocation } from "react-router-dom";
+import { useMessagesSocket } from "../hooks/useMessagesSocket";
 
 export default function DmContainer() {
-  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [currentRecipient, setCurrentRecipient] = useState<string | null>(null);
-  const [systemMessages, setSystemMessages] = useState<string[]>([]);
 
   const { id } = useParams();
   const { state } = useLocation();
@@ -19,19 +17,31 @@ export default function DmContainer() {
     currentRecipientRef.current = currentRecipient;
   }, [currentRecipient]);
 
+  const { messages, systemMessages, messagesEndRef, resetMessages } = useMessagesSocket({
+    receiveEvent: "receive_dm",
+    systemEvent: "dm_system_message",
+    historyEvent: "dm_history",
+    leaveEvent: "leave_dm",
+    activeIdRef: currentRecipientRef as React.MutableRefObject<string | null>,
+  });
+
   const joinDm = useCallback((recipientId: string) => {
     const socket = getSocket();
     if (!socket) return;
     if (currentRecipientRef.current) {
       socket.emit("leave_dm", currentRecipientRef.current);
     }
-    setMessages([]);
+    resetMessages();
     setCurrentRecipient(recipientId);
     socket.emit("join_dm", recipientId);
-  }, []);
+  }, [resetMessages]);
 
   useEffect(() => {
-    if (id) joinDm(id);
+    if (id) {
+      // Joining a DM room is an imperative side-effect
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      joinDm(id);
+    }
   }, [id, joinDm]);
 
   const sendMessage = () => {
@@ -41,44 +51,6 @@ export default function DmContainer() {
     socket.emit("send_dm", { text: input, recipientId: currentRecipient });
     setInput("");
   };
-
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  useEffect(() => {
-    const socket = getSocket();
-    if (!socket) return;
-
-    const messageHandler = (msg: Message) => {
-      setMessages((prev) => [...prev, msg]);
-    };
-
-    const systemHandler = (text: string) => {
-      setSystemMessages((prev) => [...prev, text]);
-      setTimeout(() => {
-        setSystemMessages((prev) => prev.filter((msg) => msg !== text));
-      }, 3000);
-    };
-
-    const historyHandler = (history: Message[]) => {
-      setMessages(history);
-    };
-
-    socket.on("receive_dm", messageHandler);
-    socket.on("dm_system_message", systemHandler);
-    socket.on("dm_history", historyHandler);
-
-    return () => {
-      socket.off("receive_dm", messageHandler);
-      socket.off("dm_system_message", systemHandler);
-      socket.off("dm_history", historyHandler);
-      if (currentRecipientRef.current)
-        socket.emit("leave_dm", currentRecipientRef.current);
-    };
-  }, []);
 
   return (
     <div className="dark:bg-slate-950 dark:text-white bg-zinc-100 w-full h-full p-4 flex flex-col min-h-0 dark:bg-opacity-10">

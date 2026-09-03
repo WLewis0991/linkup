@@ -1,10 +1,11 @@
 import { Link, useParams } from "react-router-dom";
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef } from "react";
 import { api } from "../api/axios";
 import { LoadingSpinner } from "../components/LoadingSpinner";
 import { useDarkMode } from "../hooks/LightButton";
 import { Avatar } from "../components/Avatar";
-import { supabase } from "../supabseClient";
+import { supabase } from "../supabaseClient";
+import { getCurrentUser } from "../auth/token";
 
 type UserProfile = {
   id: string;
@@ -19,22 +20,12 @@ const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 const MAX_SIZE_MB = 2;
 const BIO_MAX = 280;
 
-function parseJwt(token: string) {
-  try {
-    const base64 = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
-    return JSON.parse(atob(base64));
-  } catch {
-    return null;
-  }
-}
-
 export default function Profile() {
   const { id } = useParams();
   const [user, setUser] = useState<UserProfile | null>(null);
   const isDark = useDarkMode();
 
-  const token = localStorage.getItem("token");
-  const currentUser = useMemo(() => (token ? parseJwt(token) : null), [token]);
+  const currentUser = getCurrentUser();
   const isOwnProfile = currentUser?.userId === user?.id;
 
   // Avatar upload state
@@ -221,7 +212,7 @@ const handleBioSave = async () => {
               : []),
             { label: "Username", value: user.username },
             { label: "Email", value: user.email },
-            { label: "Date Joined", value: user.createdAt },
+            { label: "Date Joined", value: new Date(user.createdAt).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) },
           ].map(({ label, value }, i, arr) => (
             <div
               key={label}

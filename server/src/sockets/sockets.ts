@@ -1,19 +1,14 @@
-import dotenv from "dotenv";
 import { Server as SocketIOServer, Socket } from "socket.io";
 import { Server as HttpServer } from "http";
 import jwt from "jsonwebtoken";
 import { CustomJwtPayload } from "../types/auth.types";
-import { registerUserEvents } from "./userEvents";
 import prisma from "../config/db";
-
-dotenv.config();
-
-const JWT_SECRET = process.env.JWT_SECRET!;
+import { env } from "../config/env";
 
 export const initializeSocket = (httpServer: HttpServer) => {
   const io = new SocketIOServer(httpServer, {
     cors: {
-      origin: process.env.FRONTEND_URL,
+      origin: env.frontendUrl,
       methods: ["POST", "GET"],
     },
   });
@@ -22,7 +17,7 @@ export const initializeSocket = (httpServer: HttpServer) => {
     const token = socket.handshake.auth?.token;
     if (!token) return next(new Error("No token provided"));
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+      const decoded = jwt.verify(token, env.jwtSecret);
       socket.data.user = decoded;
       next();
     } catch (err) {
@@ -43,8 +38,6 @@ export const initializeSocket = (httpServer: HttpServer) => {
 
     // Join personal room so DMs can reach this socket
     socket.join(`dm_${user.userId}`);
-
-    registerUserEvents(io, socket);
 
     // Chat room sockets
     socket.on("join_room", async (room: string) => {
@@ -96,6 +89,20 @@ export const initializeSocket = (httpServer: HttpServer) => {
           where: { name: room },
         });
         if (!roomRecord) return;
+
+        // Only allow messages from users who are members of the room
+        const isMember = await prisma.roomMember.findUnique({
+          where: {
+            userId_roomId: {
+              userId: user.userId,
+              roomId: roomRecord.id,
+            },
+          },
+        });
+        if (!isMember) {
+          socket.emit("room_error", { message: "You are not a member of this room" });
+          return;
+        }
 
         const saved = await prisma.message.create({
           data: {
@@ -160,6 +167,21 @@ export const initializeSocket = (httpServer: HttpServer) => {
       "send_dm",
       async ({ text, recipientId }: { text: string; recipientId: string }) => {
         const senderId = socket.data.user.userId;
+
+        if (recipientId === senderId) {
+          socket.emit("dm_error", { message: "You cannot message yourself" });
+          return;
+        }
+
+        const recipient = await prisma.user.findUnique({
+          where: { id: recipientId },
+          select: { id: true },
+        });
+
+        if (!recipient) {
+          socket.emit("dm_error", { message: "User not found" });
+          return;
+        }
 
         let conversation = await prisma.conversation.findFirst({
           where: {
