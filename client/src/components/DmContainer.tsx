@@ -74,7 +74,7 @@ export default function DmContainer() {
 
       <div className="flex items-center gap-2 justify-center border-zinc-200 dark:border-slate-800 border-t pt-2">
         <input
-          className="w-1/2 dark:bg-slate-900 dark:text-white p-2 rounded dark:bg-opacity-10"
+          className="flex-1 min-w-0 min-h-11 text-base sm:text-sm dark:bg-slate-900 dark:text-white p-2 rounded dark:bg-opacity-10"
           type="text"
           placeholder="Type a message..."
           value={input}
@@ -86,7 +86,7 @@ export default function DmContainer() {
         <button
           onClick={sendMessage}
           disabled={!currentRecipient}
-          className="dark:bg-slate-900 dark:text-white p-2 rounded"
+          className="flex-shrink-0 min-h-11 px-4 dark:bg-slate-900 dark:text-white p-2 rounded"
         >
           Send
         </button>
