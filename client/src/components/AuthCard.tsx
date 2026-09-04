@@ -15,14 +15,15 @@ export function AuthCard({ title, children }: AuthCardProps) {
   }, []);
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center px-4"
-      style={{
-        opacity: mounted ? 1 : 0,
-        transform: mounted ? "translateY(0)" : "translateY(16px)",
-        transition: "0.4s",
-      }}
-    >
+    <div className="h-full overflow-y-auto">
+      <div
+        className="min-h-full flex items-center justify-center px-4 py-6"
+        style={{
+          opacity: mounted ? 1 : 0,
+          transform: mounted ? "translateY(0)" : "translateY(16px)",
+          transition: "0.4s",
+        }}
+      >
       <div className="w-full max-w-md">
         <div
           className="rounded-2xl overflow-hidden"
@@ -47,6 +48,7 @@ export function AuthCard({ title, children }: AuthCardProps) {
           )}
           {children}
         </div>
+      </div>
       </div>
     </div>
   );

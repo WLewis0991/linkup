@@ -27,7 +27,7 @@ export function AuthField({ label, error, className, ...props }: AuthFieldProps)
           setFocused(false);
           props.onBlur?.(e);
         }}
-        className={`w-full rounded-xl px-4 py-3 text-sm outline-none transition-all ${className ?? ""}`}
+        className={`w-full rounded-xl px-4 py-3 text-base sm:text-sm outline-none transition-all ${className ?? ""}`}
         style={{
           fontFamily: "'DM Sans', sans-serif",
           background: focused
