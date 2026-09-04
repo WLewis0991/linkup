@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export function DarkModeToggle() {
+export function DarkModeToggle({ compact = false }: { compact?: boolean }) {
   const [isDark, setIsDark] = useState(() =>
     document.documentElement.classList.contains("dark"),
   );
@@ -17,8 +17,8 @@ export function DarkModeToggle() {
   };
 
   return (
-    <button onClick={toggle}>
-      {isDark ? "☀️ Light mode" : "🌙 Dark mode"}
+    <button onClick={toggle} aria-label="Toggle dark mode">
+      {compact ? (isDark ? "☀️" : "🌙") : isDark ? "☀️ Light mode" : "🌙 Dark mode"}
     </button>
   );
 }
