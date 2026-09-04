@@ -7,13 +7,15 @@ const styles = `
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   .splash {
-    min-height: 100vh;
+    min-height: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: safe center;
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     gap: 0;
   }
 
