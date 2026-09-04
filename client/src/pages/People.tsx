@@ -35,7 +35,7 @@ export default function People() {
   }, []);
 
   return (
-    <div className="h-full overflow-y-auto px-6 py-10 dark:text-slate-100 bg-zinc-100 dark:bg-slate-950 dark:bg-opacity-10 text-slate-800">
+    <div className="h-full overflow-y-auto px-4 py-6 sm:px-6 sm:py-10 dark:text-slate-100 bg-zinc-100 dark:bg-slate-950 dark:bg-opacity-10 text-slate-800">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {users.map((user) => (
           <UserCard key={user.id} user={user} />

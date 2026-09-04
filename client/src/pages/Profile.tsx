@@ -150,7 +150,7 @@ const handleBioSave = async () => {
   });
 
   return (
-    <div className="h-full overflow-y-auto px-6 py-10 dark:text-slate-100 bg-zinc-100 dark:bg-slate-950 dark:bg-opacity-10 text-slate-800">
+    <div className="h-full overflow-y-auto px-4 py-6 sm:px-6 sm:py-10 dark:text-slate-100 bg-zinc-100 dark:bg-slate-950 dark:bg-opacity-10 text-slate-800">
       <div className="max-w-xl mx-auto flex flex-col gap-6">
 
         {/* Avatar + username hero */}
