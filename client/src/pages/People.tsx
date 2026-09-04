@@ -1,5 +1,6 @@
 import { api } from "../api/axios";
 import { useEffect, useState } from "react";
+import axios from "axios";
 import UserCard from "../components/UserCards";
 
 interface UserCardProps {
@@ -16,17 +17,20 @@ export default function People() {
   const fetchUsers = async () => {
     try {
       const res = await api.get("/api/user");
-      console.log("Users from API:", res.data);
       setUsers(res.data);
-    } catch (err: any) {
-      console.error(
-        "Failed to fetch users:",
-        err.response?.data || err.message,
-      );
+    } catch (err) {
+      const error = err as Error;
+      if (axios.isAxiosError(error)) {
+        console.error("Failed to fetch users:", error.response?.data || error.message);
+      } else {
+        console.error("Failed to fetch users:", error.message);
+      }
     }
   };
 
   useEffect(() => {
+    // Initial data fetch is an external subscription-style side effect
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchUsers();
   }, []);
 

@@ -2,7 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { api } from "../api/axios";
 import { LoadingSpinner } from "../components/LoadingSpinner";
-import { useDarkMode } from "../hooks/LightButton";
+import { useDarkMode } from "../hooks/useDarkMode";
 import { Avatar } from "../components/Avatar";
 import { supabase } from "../supabaseClient";
 import { getCurrentUser } from "../auth/token";
