@@ -23,7 +23,7 @@ const httpServer = createServer(app);
 app.set("trust proxy", 1);
 
 app.use(helmet());
-app.use(cors({ origin: env.frontendUrl }));
+app.use(cors({ origin: env.frontendUrls }));
 app.use(express.json());
 
 const authLimiter = rateLimit({

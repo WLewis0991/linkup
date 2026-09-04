@@ -15,5 +15,10 @@ export const env = {
   jwtSecret: required("JWT_SECRET"),
   databaseUrl: required("DATABASE_URL"),
   directUrl: process.env.DIRECT_URL,
-  frontendUrl: process.env.FRONTEND_URL || "http://localhost:5173",
+  // Comma-separated list, e.g. "http://localhost:5173,http://localhost:5174".
+  // Production sets a single origin (the Vercel URL).
+  frontendUrls: (process.env.FRONTEND_URL || "http://localhost:5173")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean),
 };
