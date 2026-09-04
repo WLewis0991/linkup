@@ -31,18 +31,18 @@ function App() {
         <div className="absolute -bottom-40 -right-40 w-[500px] h-[500px] rounded-full bg-zinc-400/10 dark:bg-zinc-500/15 blur-[100px]" />
       </div>
 
-      <div className="relative z-10 h-dvh flex items-center justify-center p-4 sm:p-8">
+      <div className="relative z-10 h-dvh flex items-center justify-center sm:p-8">
         <div
           className="
-          w-full max-w-5xl h-full
-         
-          backdrop-blur-xl
-          border border-zinc-200/80 dark:border-zinc-700/50
-          rounded-2xl
-          shadow-2xl shadow-zinc-900/10 dark:shadow-black/40
+          w-full h-full
           overflow-hidden
-          ring-1 ring-zinc-900/5 dark:ring-white/5
           flex flex-col
+          sm:max-w-5xl
+          sm:rounded-2xl
+          sm:border sm:border-zinc-200/80 sm:dark:border-zinc-700/50
+          sm:backdrop-blur-xl
+          sm:shadow-2xl sm:shadow-zinc-900/10 sm:dark:shadow-black/40
+          sm:ring-1 sm:ring-zinc-900/5 sm:dark:ring-white/5
         "
         >
           {/* Top accent bar */}

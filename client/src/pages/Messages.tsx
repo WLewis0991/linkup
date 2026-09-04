@@ -22,7 +22,7 @@ export default function Messages() {
   if (!user) return null
 
   return (
-    <div className="bg-zinc-100 dark:bg-slate-950 dark:text-slate-100 dark:bg-opacity-10 p-10 w-full h-full">
+    <div className="bg-zinc-100 dark:bg-slate-950 dark:text-slate-100 dark:bg-opacity-10 p-4 sm:p-10 w-full h-full overflow-y-auto">
       <h1 className="text-2xl font-bold mb-6">My DMs</h1>
       {conversations.length === 0 ? (
         <p>You have no DMs yet.</p>

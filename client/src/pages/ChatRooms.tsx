@@ -26,7 +26,7 @@ export default function ChatRooms() {
 
   return (
     <>
-      <div className="bg-zinc-100 dark:bg-slate-950 dark:text-slate-100 dark:bg-opacity-10 p-10 w-full h-full">
+      <div className="bg-zinc-100 dark:bg-slate-950 dark:text-slate-100 dark:bg-opacity-10 p-4 sm:p-10 w-full h-full overflow-y-auto">
         <h1 className="text-2xl font-bold mb-6">My Chat Rooms</h1>
         {rooms.length === 0 ? (
           <p>You are not a member of any chat rooms yet.</p>
