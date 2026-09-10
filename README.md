@@ -9,6 +9,12 @@ Demo accounts (password `demo1234` for both): `aria`, `marcus`
 
 Note: the API runs on Render's free tier and sleeps when idle, so the first request after inactivity can take ~30 seconds to respond.
 
+## Screenshots
+
+![Home — what's inside](client/public/landing-screenshot.png)
+![Chat room — Introductions](client/public/chatroom-screenshot.png)
+![Profile — marcus](client/public/profile-screenshot.png)
+
 ## Stack
 
 - **Client:** React 19, Vite, React Router, Tailwind CSS, Socket.IO client, Axios
