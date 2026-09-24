@@ -22,6 +22,28 @@ export const createRoomSchema = z.object({
   description: z.string().max(300).optional(),
 });
 
+export const socketRoomSchema = z
+  .string()
+  .min(1, "Room name is required")
+  .max(60, "Room name must be at most 60 characters");
+
+export const socketTextSchema = z
+  .string()
+  .min(1, "Message is required")
+  .max(2000, "Message must be at most 2000 characters");
+
+export const socketRecipientIdSchema = z.string().min(1);
+
+export const socketMessageSchema = z.object({
+  text: socketTextSchema,
+  room: socketRoomSchema,
+});
+
+export const socketDmSchema = z.object({
+  text: socketTextSchema,
+  recipientId: socketRecipientIdSchema,
+});
+
 export const updateProfileSchema = z.object({
   avatar: z.string().url("Invalid avatar URL").or(z.literal("")).optional(),
   bios: z.string().max(280).optional(),

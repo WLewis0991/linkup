@@ -4,6 +4,12 @@ import jwt from "jsonwebtoken";
 import { CustomJwtPayload } from "../types/auth.types";
 import prisma from "../config/db";
 import { env } from "../config/env";
+import {
+  socketDmSchema,
+  socketMessageSchema,
+  socketRecipientIdSchema,
+  socketRoomSchema,
+} from "../validation/schemas";
 
 export const initializeSocket = (httpServer: HttpServer) => {
   const io = new SocketIOServer(httpServer, {
@@ -41,10 +47,16 @@ export const initializeSocket = (httpServer: HttpServer) => {
 
     // Chat room sockets
     socket.on("join_room", async (room: string) => {
+      const parsed = socketRoomSchema.safeParse(room);
+      if (!parsed.success) {
+        socket.emit("room_error", { message: "Invalid room name" });
+        return;
+      }
+      const safeRoom = parsed.data;
       const user = socket.data.user;
 
       const roomRecord = await prisma.room.findUnique({
-        where: { name: room },
+        where: { name: safeRoom },
       });
       if (!roomRecord) return;
 
@@ -61,8 +73,8 @@ export const initializeSocket = (httpServer: HttpServer) => {
         return;
       }
 
-      socket.join(room);
-      io.to(room).emit(
+      socket.join(safeRoom);
+      io.to(safeRoom).emit(
         "system_message",
         `${user.username} has joined the room!`,
       );
@@ -88,8 +100,11 @@ export const initializeSocket = (httpServer: HttpServer) => {
     });
 
     socket.on("leave_room", (room: string) => {
-      socket.leave(room);
-      io.to(room).emit(
+      const parsed = socketRoomSchema.safeParse(room);
+      if (!parsed.success) return;
+      const safeRoom = parsed.data;
+      socket.leave(safeRoom);
+      io.to(safeRoom).emit(
         "system_message",
         `${socket.data.user?.username} has left the room.`,
       );
@@ -97,7 +112,13 @@ export const initializeSocket = (httpServer: HttpServer) => {
 
     socket.on(
       "send_message",
-      async ({ text, room }: { text: string; room: string }) => {
+      async (payload: { text: string; room: string }) => {
+        const parsed = socketMessageSchema.safeParse(payload);
+        if (!parsed.success) {
+          socket.emit("room_error", { message: "Invalid message payload" });
+          return;
+        }
+        const { text, room } = parsed.data;
         const user = socket.data.user;
 
         const roomRecord = await prisma.room.findUnique({
@@ -144,13 +165,16 @@ export const initializeSocket = (httpServer: HttpServer) => {
 
     // DM sockets
     socket.on("join_dm", async (recipientId: string) => {
+      const parsed = socketRecipientIdSchema.safeParse(recipientId);
+      if (!parsed.success) return;
       const senderId = socket.data.user.userId;
+      const recipient = parsed.data;
 
       const conversation = await prisma.conversation.findFirst({
         where: {
           AND: [
             { participants: { some: { userId: senderId } } },
-            { participants: { some: { userId: recipientId } } },
+            { participants: { some: { userId: recipient } } },
           ],
         },
       });
@@ -180,7 +204,13 @@ export const initializeSocket = (httpServer: HttpServer) => {
 
     socket.on(
       "send_dm",
-      async ({ text, recipientId }: { text: string; recipientId: string }) => {
+      async (payload: { text: string; recipientId: string }) => {
+        const parsed = socketDmSchema.safeParse(payload);
+        if (!parsed.success) {
+          socket.emit("dm_error", { message: "Invalid DM payload" });
+          return;
+        }
+        const { text, recipientId } = parsed.data;
         const senderId = socket.data.user.userId;
 
         if (recipientId === senderId) {
@@ -243,7 +273,9 @@ export const initializeSocket = (httpServer: HttpServer) => {
     );
 
     socket.on("leave_dm", (room: string) => {
-      socket.leave(room);
+      const parsed = socketRoomSchema.safeParse(room);
+      if (!parsed.success) return;
+      socket.leave(parsed.data);
     });
 
     socket.on("disconnect", () => {
