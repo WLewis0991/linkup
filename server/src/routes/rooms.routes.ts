@@ -14,6 +14,7 @@ interface CreateRoomRequest {
 //Create new room
 router.post(
   "/create",
+  authMiddleware,
   validate(createRoomSchema),
   async (req: Request<{}, {}, CreateRoomRequest>, res: Response) => {
     const { name, description } = req.body;

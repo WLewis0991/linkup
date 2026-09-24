@@ -41,16 +41,31 @@ export const initializeSocket = (httpServer: HttpServer) => {
 
     // Chat room sockets
     socket.on("join_room", async (room: string) => {
-      socket.join(room);
-      io.to(room).emit(
-        "system_message",
-        `${socket.data.user?.username} has joined the room!`,
-      );
+      const user = socket.data.user;
 
       const roomRecord = await prisma.room.findUnique({
         where: { name: room },
       });
       if (!roomRecord) return;
+
+      const isMember = await prisma.roomMember.findUnique({
+        where: {
+          userId_roomId: {
+            userId: user.userId,
+            roomId: roomRecord.id,
+          },
+        },
+      });
+      if (!isMember) {
+        socket.emit("room_error", { message: "You are not a member of this room" });
+        return;
+      }
+
+      socket.join(room);
+      io.to(room).emit(
+        "system_message",
+        `${user.username} has joined the room!`,
+      );
 
       const history = await prisma.message.findMany({
         where: { roomId: roomRecord.id },
